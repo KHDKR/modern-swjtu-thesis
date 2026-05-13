@@ -13,13 +13,13 @@
   spacing: 1.5 * 15.6pt - 0.7em,
   justify: true,
   first-line-indent: (amount: 2em, all: true),
-  numbering: custom-numbering.with(first-level: "第一章 ", depth: 4, "1.1 "),
+  numbering: custom-numbering.with(first-level: "第1章 ", depth: 4, "1.1 "),
   // 正文字体与字号参数
   text-args: auto,
   // 标题字体与字号
   heading-font: auto,
-  heading-size: (字号.四号,),
-  heading-weight: ("regular",),
+  heading-size: (字号.小二, 字号.小三, 字号.四号, 字号.小四),
+  heading-weight: ("regular", "regular", "regular", "regular"),
   heading-above: (2 * 15.6pt - 0.7em, 2 * 15.6pt - 0.7em),
   heading-below: (2 * 15.6pt - 0.7em, 1.5 * 15.6pt - 0.7em),
   heading-pagebreak: (true, false),
@@ -29,17 +29,19 @@
   header-vspace: 0em,
   display-header: false,
   skip-on-first-level: true,
-  stroke-width: 0.5pt,
+  stroke-width: 0.8mm,
   reset-footnote: true,
   // caption 的 separator
-  separator: "  ",
+  separator: " ",
   // caption 样式
   caption-style: strong,
   caption-size: 字号.五号,
   // figure 计数
-  show-figure: i-figured.show-figure,
+  show-figure: i-figured.show-figure.with(numbering: "1-1"),
   // equation 计数
-  show-equation: i-figured.show-equation,
+  show-equation: i-figured.show-equation.with(
+    numbering: (..nums) => text(font: ("Times New Roman", "Songti SC", "STSong"))[（#numbering("1-1", ..nums)）],
+  ),
   ..args,
   it,
 ) = {
@@ -165,15 +167,15 @@
           counter(footnote).update(0)
         }
         stack(
-          align(center, text(font: fonts.宋体, size: 字号.五号, "西南交通大学本科毕业设计（论文）")),
+          align(center, text(font: fonts.黑体, size: 字号.小四, "西南交通大学本科毕业设计（论文）")),
           v(0.25em),
           line(length: 100%, stroke: stroke-width + black)
         )
       },
       footer: context {
         align(center)[
-          #set text(font: fonts.宋体, size: 字号.五号)
-          第 #counter(page).display() 页
+          #set text(font: fonts.宋体, size: 字号.小四)
+          第#counter(page).display()页
         ]
       }
     )

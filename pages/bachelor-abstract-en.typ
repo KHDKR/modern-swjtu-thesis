@@ -38,14 +38,14 @@
   pagebreak(weak: true, to: if twoside { "odd" })
 
   [
-    #set text(font: fonts.楷体, size: 字号.小四)
+    #set text(font: "Times New Roman", size: 字号.小四)
     #set par(leading: leading, justify: true, spacing: spacing)
 
     // 标记一个不可见的标题用于目录生成
     #invisible-heading(level: 1, outlined: outlined, "Abstract")
 
     #align(center)[
-      #text(font:fonts.楷体, size:字号.小二, tracking: 0.1em)[#fakebold[Abstract]] 
+      #text(font: "Times New Roman", size:字号.小二, tracking: 0.1em)[#fakebold[Abstract]] 
     ]
 
     #[
@@ -56,7 +56,7 @@
 
     #v(1fr)
 
-    #fakebold[Key Words:] #(("",)+ keywords.intersperse("; ")).sum()
+    #text(font: "Times New Roman")[#fakebold[Key words:]] #(("",)+ keywords.intersperse("; ")).sum()
     #v(5em)
   ]
 }

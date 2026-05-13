@@ -38,7 +38,7 @@
   pagebreak(weak: true, to: if twoside { "odd" })
 
   [
-    #set text(font: fonts.楷体, size: 字号.小四)
+    #set text(font: fonts.宋体, size: 字号.小四)
     #set par(leading: leading, justify: true, spacing: spacing)
 
     // 标记一个不可见的标题用于目录生成
@@ -54,7 +54,7 @@
 
     #v(1fr)
 
-    #fakebold[关键词：]#(("",)+ keywords.intersperse("；")).sum()
+    #text(font: fonts.黑体)[#fakebold[关键词：]]#(("",)+ keywords.intersperse("；")).sum()
     #v(5em)
   ]
 }

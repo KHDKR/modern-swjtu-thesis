@@ -13,13 +13,13 @@
   page(
     margin: (top: 2.6cm, bottom: 2.6cm, left: 2.7cm, right: 2.7cm),
     header: [
-      #set text(font: fonts.宋体, size: 字号.小五)
+      #set text(font: fonts.黑体, size: 字号.小四)
       #align(center)[西南交通大学本科毕业设计（论文）]
       #v(-0.5em)
-      #line(length: 100%, stroke: 0.5pt)
+      #line(length: 100%, stroke: 0.8mm)
     ],
     footer: context {
-      set text(font: fonts.宋体, size: 字号.小五)
+      set text(font: fonts.宋体, size: 字号.小四)
       align(center)[第#counter(page).display("I")页]
     }
   )[

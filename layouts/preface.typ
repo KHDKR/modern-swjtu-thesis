@@ -21,15 +21,15 @@
     header: context {
       stack(
         // 可以根据需要调整字体字号
-        align(center, text(font: fonts.宋体, size: 10.5pt, "西南交通大学本科毕业设计(论文)")),
+        align(center, text(font: fonts.黑体, size: 12pt, "西南交通大学本科毕业设计（论文）")),
         v(0.25em),
-        line(length: 100%, stroke: 0.5pt)
+        line(length: 100%, stroke: 0.8mm)
       )
     },
     footer: context {
       align(center)[
-        #set text(font: fonts.宋体, size: 10.5pt)
-        第 #counter(page).display() 页
+        #set text(font: fonts.宋体, size: 12pt)
+        第#counter(page).display()页
       ]
     }
   )
