@@ -26,6 +26,7 @@
   fonts = 字体 + fonts
   info = (
     title: ("（此处为论文题目，黑体 2 号字）"),
+    title-en: "THESIS TITLE IN ENGLISH",
     grade: "20XX",
     student-id: "1234567890",
     author: "张三",
@@ -39,6 +40,9 @@
   // 2.1 如果是字符串，则使用换行符将标题分隔为列表
   if type(info.title) == str {
     info.title = info.title.split("\n")
+  }
+  if type(info.title-en) == str {
+    info.title-en = info.title-en.split("\n")
   }
   // 2.2 根据 min-title-lines 填充标题
   info.title = info.title + range(min-title-lines - info.title.len()).map((it) => "　")
@@ -123,8 +127,14 @@
     spacing: 150%,
     info.title.filter(s => s != "　").join("")
   )
+  v(12pt)
+  text(
+    font: fonts.黑体,
+    size: 字号.二号,
+    upper(info.title-en.filter(s => s != "").join(" "))
+  )
 
-  v(122pt)
+  v(82pt)
 
   block(width: 250pt, grid(
     columns: (info-key-width, 1fr, info-key-width, 1fr),
@@ -142,11 +152,14 @@
     info-long-value("supervisor", info.supervisor.at(0)),
   ))
   
-  v(160pt)
+  v(80pt)
   
   text(
     font: fonts.黑体,
     size: 字号.小四,
     info.submit-date
   )
+
+  pagebreak()
+  pagebreak()
 }
