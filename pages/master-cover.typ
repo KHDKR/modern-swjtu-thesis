@@ -2,7 +2,13 @@
 #import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生封面（中文封面 + 英文扉页）
-// 依据《西南交通大学研究生学位论文撰写范式》中的硕士学位论文封面样式
+// 版式按《西南交通大学研究生学位论文撰写范式》中的硕士封面逐项对齐：
+//   - 分类号、密级、单位代码行：小四号宋体，后接下划线；
+//   - 校名：26 pt 黑体加粗；「硕士学位论文」：22 pt 宋体加粗；
+//   - 学位论文题目：18 pt 黑体，带下划线；
+//   - 学科专业等栏目：16 pt 宋体，标签四字分散对齐，值写在下划线上；
+//   - 日期：16 pt 宋体居中。
+// 各元素的纵向位置取自 Word 原版，按绝对坐标放置。
 #let master-cover(
   // documentclass 传入的参数
   doctype: "master",
@@ -13,13 +19,8 @@
   fonts: (:),
   info: (:),
   // 其他参数
-  title-size: 字号.二号,
-  title-weight: "bold",
-  field-label-size: 字号.三号,
-  field-value-size: 字号.三号,
-  field-width: 68%,
-  field-label-width: 132pt,
-  field-row-gutter: 0.5cm,
+  underline-stroke: 0.75pt,
+  title-size: 18pt,
   anonymous-info-keys: ("student-id", "author", "supervisor", "supervisor-ii", "author-en", "supervisor-en"),
   datetime-display: datetime-display,
   datetime-en-display: datetime-en-display,
@@ -49,146 +50,142 @@
   ) + info
 
   // 2.  对参数进行处理
-  // 2.1 如果是字符串，则使用换行符将标题分隔为列表
   if type(info.title) == str {
     info.title = info.title.split("\n")
   }
   if type(info.title-en) == str {
     info.title-en = info.title-en.split("\n")
   }
-  // 2.2 日期在渲染时格式化
   assert(type(info.submit-date) == datetime, message: "submit-date must be datetime.")
-  // 2.3 学位类型
   if info.degree == auto {
     info.degree = if doctype == "doctor" { "工学博士" } else { "工学硕士" }
   }
 
   // 3.  内部辅助函数
   let hide(key) = anonymous and (key in anonymous-info-keys)
-  let blank(width) = box(
+
+  // 下划线单元格：可承载居中书写的值
+  let rule(width: 100%, content: none) = block(
     width: width,
-    height: 1em,
-    baseline: 0pt,
-    stroke: (bottom: 0.75pt + black),
+    height: 1.2em,
+    inset: 0pt,
+    stroke: (bottom: underline-stroke + black),
+    align(center + horizon, content),
   )
-  let field-label(body) = text(font: fonts.黑体, size: field-label-size, body)
-  let field-value(key, body) = {
-    set align(left)
-    text(
-      font: fonts.宋体,
-      size: field-value-size,
-      if hide(key) { "████████" } else { body },
-    )
-  }
+
+  // 四字标签分散对齐（两字标签放在首尾两格，与 Word 版式一致）
+  let label-slot(chars) = grid(
+    columns: (1fr, 1fr, 1fr, 1fr),
+    align: center + horizon,
+    ..chars.map(c => if c == none { [] } else { c }),
+  )
+
+  // 中文栏目行：标签 + 下划线值
+  let field(chars, value) = grid(
+    columns: (96pt, 1fr),
+    align: horizon,
+    label-slot(chars),
+    rule(content: value),
+  )
 
   // 4.  中文封面
   pagebreak(weak: true)
   set page(
-    margin: (top: 2.54cm, bottom: 2.54cm, left: 2.6cm, right: 2.6cm),
+    margin: 0pt,
     header: none,
     footer: none,
     numbering: none,
   )
 
-  // 4.1 顶部分类号
-  block(width: 100%)[
-    #set text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)
-    #set par(leading: 1em, justify: true, first-line-indent: 0pt)
+  // 4.1 顶部分类号、密级、单位代码
+  place(top + left, dx: 2.6cm, dy: 2.674cm, block(width: 15.8cm, text(font: fonts.宋体, size: 字号.小四)[
     #grid(
-      columns: (1fr, 1fr),
-      column-gutter: 1em,
-      row-gutter: 0.55cm,
-      [中国图书分类号：#blank(2.6cm)],
-      align(right)[密级：#if info.secret-level == "" { blank(2.4cm) } else { info.secret-level }],
-      [国际图书分类号：#blank(2.6cm)],
-      align(right)[单位代码：#info.school-code],
+      columns: (auto, 90pt, 1fr, 4.6cm),
+      align: horizon,
+      [中国图书分类号],
+      rule(width: 90pt, content: info.clc),
+      [],
+      grid(
+        columns: (auto, 1fr),
+        align: horizon,
+        [密级],
+        rule(content: info.secret-level),
+      ),
     )
-  ]
+  ]))
 
-  set align(center)
-
-  v(1.35cm)
-  text(font: fonts.黑体, size: 26pt, weight: "bold")[西 南 交 通 大 学]
-  v(0.55cm)
-  text(font: fonts.宋体, size: 22pt, weight: "bold")[硕 士 学 位 论 文]
-
-  v(2.3cm)
-  block(width: 100%, {
-    set par(leading: 1.5em)
-    text(
-      font: fonts.黑体,
-      size: title-size,
-      weight: title-weight,
-      info.title.join("\n"),
+  place(top + left, dx: 2.6cm, dy: 3.507cm, block(width: 15.8cm, text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)[
+    #grid(
+      columns: (auto, 90pt, 1fr, 4.6cm),
+      align: horizon,
+      [国际图书分类号],
+      rule(width: 90pt, content: info.udc),
+      [],
+      grid(
+        columns: (auto, 1fr),
+        align: horizon,
+        [单位代码],
+        rule(content: info.school-code),
+      ),
     )
-  })
+  ]))
 
-  v(2.3cm)
-  block(
-    width: field-width,
-    grid(
-      columns: (field-label-width, 1fr),
-      column-gutter: 0.6em,
-      row-gutter: field-row-gutter,
-      align: (left + horizon, left + horizon),
-      field-label[学 科 专 业],
-      field-value("major", info.major),
-      field-label[学　　　号],
-      field-value("student-id", info.student-id),
-      field-label[作 者 姓 名],
-      field-value("author", info.author),
-      field-label[指 导 老 师],
-      field-value("supervisor", info.supervisor.join(" ")),
-      field-label[学　　　院],
-      field-value("department", info.department),
-    ),
+  // 4.2 校名与学位类别
+  place(center + top, dy: 7.165cm, text(font: fonts.黑体, size: 26pt, weight: "bold")[西#h(0.5em)南#h(0.5em)交#h(0.5em)通#h(0.5em)大#h(0.5em)学])
+  place(center + top, dy: 8.632cm, text(font: fonts.宋体, size: 22pt, weight: "bold")[硕#h(0.5em)士#h(0.5em)学#h(0.5em)位#h(0.5em)论#h(0.5em)文])
+
+  // 4.3 学位论文题目（加下划线）
+  place(top + left, dx: 2.6cm, dy: 12.35cm, block(width: 15.8cm, align(center, {
+    set par(leading: 1.35em)
+    underline(
+      stroke: underline-stroke,
+      text(font: fonts.黑体, size: title-size, info.title.join("\n")),
+    )
+  })))
+
+  // 4.4 学科专业、学号、作者姓名、指导老师、学院
+  let field-data = (
+    (16.210cm, ("学", "科", "专", "业"), "major", info.major),
+    (17.311cm, ("学", none, none, "号"), "student-id", info.student-id),
+    (18.398cm, ("作", "者", "姓", "名"), "author", info.author),
+    (19.502cm, ("指", "导", "老", "师"), "supervisor", info.supervisor.join(" ")),
+    (20.610cm, ("学", none, none, "院"), "department", info.department),
   )
+  for (y, chars, key, value) in field-data {
+    place(top + left, dx: 2.6cm, dy: y, block(width: 9.05cm, text(font: fonts.宋体, size: 字号.三号, field(chars, if hide(key) { "████████" } else { value }))))
+  }
 
-  v(2.2cm)
-  text(font: fonts.宋体, size: 字号.三号, datetime-display(info.submit-date))
+  // 4.5 日期
+  place(center + top, dy: 25.008cm, text(font: fonts.宋体, size: 字号.三号, datetime-display(info.submit-date)))
 
   // 5.  英文扉页
   pagebreak(weak: true)
-  set align(center)
 
-  v(1.2cm)
-  text(font: fonts.宋体, size: 字号.四号, weight: "bold")[
-    A Thesis Submitted to \
-    Southwest Jiaotong University for Master Degree
-  ]
+  place(center + top, dy: 3.644cm, text(font: fonts.宋体, size: 字号.四号, weight: "bold", "A Thesis Submitted to"))
+  place(center + top, dy: 4.731cm, text(font: fonts.宋体, size: 字号.四号, weight: "bold", "Southwest Jiaotong University for Master Degree"))
 
-  v(2.6cm)
-  block(width: 100%, {
+  place(top + left, dx: 2.6cm, dy: 8.149cm, block(width: 15.8cm, align(center, {
     set par(leading: 1.5em)
-    text(
-      font: fonts.宋体,
-      size: title-size,
-      weight: "bold",
-      info.title-en.join("\n"),
-    )
-  })
+    text(font: fonts.宋体, size: 22pt, weight: "bold", info.title-en.join("\n"))
+  })))
 
-  v(3.4cm)
-  block(
-    width: field-width,
-    grid(
-      columns: (118pt, 1fr),
-      column-gutter: 0.6em,
-      row-gutter: field-row-gutter,
-      align: (left + horizon, left + horizon),
-      text(font: fonts.宋体, size: field-label-size)[Discipline],
-      field-value("major-en", info.major-en),
-      text(font: fonts.宋体, size: field-label-size)[Student ID],
-      field-value("student-id", info.student-id),
-      text(font: fonts.宋体, size: field-label-size)[Author],
-      field-value("author-en", info.author-en),
-      text(font: fonts.宋体, size: field-label-size)[Supervisor],
-      field-value("supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }),
-      text(font: fonts.宋体, size: field-label-size)[School],
-      field-value("department-en", info.department-en),
-    ),
+  let en-field-data = (
+    (15.981cm, "Discipline", "major-en", info.major-en),
+    (17.071cm, "Student ID", "student-id", info.student-id),
+    (18.175cm, "Author", "author-en", info.author-en),
+    (19.279cm, "Supervisor", "supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }),
+    (20.380cm, "School", "department-en", info.department-en),
   )
+  for (y, label, key, value) in en-field-data {
+    place(top + left, dx: 2.6cm, dy: y, block(width: 15.8cm, text(font: fonts.宋体, size: 字号.三号, grid(
+      columns: (110pt, 1fr),
+      align: horizon,
+      label,
+      rule(content: if hide(key) { "████████" } else { value }),
+    ))))
+  }
 
-  v(2.4cm)
-  text(font: fonts.宋体, size: 字号.三号, datetime-en-display(info.submit-date))
+  place(center + top, dy: 25.612cm, text(font: fonts.宋体, size: 字号.三号, datetime-en-display(info.submit-date)))
 }
+
+

@@ -42,7 +42,6 @@
       set align(center)
       text(..title-text-args, title)
       // 标记一个不可见的标题用于目录生成
-      invisible-heading(level: 1, outlined: outlined, title)
     }
 
     v(title-vspace)
@@ -72,6 +71,7 @@
       header: master-header(header-title, fonts: fonts),
       footer: master-footer(numbering: "I", fonts: fonts),
     )
+    v(24pt)
     render
   }
 }

@@ -1,4 +1,4 @@
-﻿#import "../utils/style.typ": 字号, 字体
+#import "../utils/style.typ": 字号, 字体
 #import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
 // 硕士研究生英文摘要页（ABSTRACT）
@@ -43,10 +43,12 @@
   set text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)
   set par(leading: 8pt, spacing: 0pt, justify: true, first-line-indent: (amount: 2em, all: true))
 
-  // 4.  标题
+  // 4.  标题（距页面顶端 24 磅，与 Word 原版对齐）
+  v(24pt)
   block(
-    above: 24pt,
-    below: 18pt,
+    width: 100%,
+    above: 0pt,
+    below: 23pt,
     align(center, text(font: fonts.黑体, size: 字号.小三, weight: "bold", title)),
   )
 

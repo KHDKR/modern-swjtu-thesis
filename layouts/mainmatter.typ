@@ -24,6 +24,8 @@
   heading-below: (2 * 15.6pt - 0.7em, 1.5 * 15.6pt - 0.7em),
   heading-pagebreak: (true, false),
   heading-align: (center, auto),
+  // 一级标题距页面上边距的额外距离（Typst 会丢弃页首的块间距，故用显式 v 补足）
+  heading-top-space: 0pt,
   // 页眉
   header-render: auto,
   header-vspace: 0em,
@@ -39,6 +41,8 @@
   // 页脚样式："prefix" 为「第 X 页」，"plain" 为纯页码
   footer-style: "prefix",
   footer-size: auto,
+  // 正文开始前若当前页为偶数页，是否插入空白页（双面打印用）
+  blank-page-before: true,
   reset-footnote: true,
   // caption 的 separator
   separator: " ",
@@ -143,6 +147,9 @@
         pagebreak(weak: true)
       }
     }
+    if it.level == 1 and heading-top-space != 0pt {
+      v(heading-top-space)
+    }
     if array-at(heading-align, it.level) != auto {
       set align(array-at(heading-align, it.level))
       it
@@ -195,9 +202,11 @@
       })
     },
   )
-  context {
-    if calc.even(here().page()) {
-      page(header: none, footer: none)[]
+  if blank-page-before {
+    context {
+      if calc.even(here().page()) {
+        page(header: none, footer: none)[]
+      }
     }
   }
   counter(page).update(1)

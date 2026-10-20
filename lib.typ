@@ -1,4 +1,4 @@
-// 南京大学学位论文模板 modern-nju-thesis
+﻿// 南京大学学位论文模板 modern-nju-thesis
 // Author: https://github.com/OrangeX4
 // Repo: https://github.com/nju-lug/modern-nju-thesis
 // 在线模板可能不会更新得很及时，如果需要最新版本，请关注 Repo
@@ -135,11 +135,13 @@
           header-size: 字号.五号,
           header-stroke: 0.75pt,
           footer-style: "plain",
+          blank-page-before: false,
           footer-size: 字号.小五,
           heading-size: (字号.三号, 字号.四号, 字号.四号, 字号.小四),
           heading-above: (24pt, 18pt, 12pt, 12pt),
           heading-below: (18pt, 6pt, 6pt, 6pt),
           heading-weight: ("regular", "regular", "regular", "regular"),
+          heading-top-space: 24pt,
           leading: 8pt,
           spacing: 0pt,
           caption-style: it => it,
@@ -342,6 +344,7 @@
           twoside: twoside,
           title: "图目录",
           header-title: "图目录",
+          title-vspace: 23pt,
           title-text-args: (font: fonts.黑体, size: 字号.小三),
         ) + named
         list-of-figures(..args.pos(), ..opts, fonts: fonts + named.at("fonts", default: (:)))
@@ -362,6 +365,7 @@
           twoside: twoside,
           title: "表目录",
           header-title: "表目录",
+          title-vspace: 23pt,
           title-text-args: (font: fonts.黑体, size: 字号.小三),
         ) + named
         list-of-tables(..args.pos(), ..opts, fonts: fonts + named.at("fonts", default: (:)))
@@ -434,3 +438,5 @@
     },
   )
 }
+
+
