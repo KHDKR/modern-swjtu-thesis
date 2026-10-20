@@ -30,6 +30,15 @@
   display-header: false,
   skip-on-first-level: true,
   stroke-width: 0.8mm,
+  // 是否在章标题处自动分页，并（双面模式下）确保章首页位于奇数页
+  // 单页页眉文字，auto 时使用本科毕业设计（论文）的页眉
+  header-text: auto,
+  header-font: auto,
+  header-size: auto,
+  header-stroke: 0.8mm,
+  // 页脚样式："prefix" 为「第 X 页」，"plain" 为纯页码
+  footer-style: "prefix",
+  footer-size: auto,
   reset-footnote: true,
   // caption 的 separator
   separator: " ",
@@ -57,7 +66,20 @@
   if heading-font == auto {
     heading-font = (fonts.黑体,)
   }
-  // 1.2 处理 heading- 开头的其他参数
+  // 1.2 页眉页脚默认参数
+  if header-text == auto {
+    header-text = "西南交通大学本科毕业设计（论文）"
+  }
+  if header-font == auto {
+    header-font = fonts.黑体
+  }
+  if header-size == auto {
+    header-size = 字号.小四
+  }
+  if footer-size == auto {
+    footer-size = 字号.小四
+  }
+  // 1.3 处理 heading- 开头的其他参数
   let heading-text-args-lists = args.named().pairs()
     .filter((pair) => pair.at(0).starts-with("heading-"))
     .map((pair) => (pair.at(0).slice("heading-".len()), pair.at(1)))
@@ -129,14 +151,14 @@
     }
   }
 
-  // 5.  处理页眉
-  set page(..(if display-header {
-    (
-      header: context {
-        // 重置 footnote 计数器
-        if reset-footnote {
-          counter(footnote).update(0)
-        }
+  // 5.  处理页眉页脚
+  set page(
+    header: context {
+      // 重置 footnote 计数器
+      if reset-footnote {
+        counter(footnote).update(0)
+      }
+      if display-header {
         let loc = here()
         // 5.1 获取当前页面的一级标题
         let cur-heading = current-heading(level: 1)
@@ -157,29 +179,22 @@
           }
           v(header-vspace)
         }
-      }
-    )
-  } else {
-    (
-      header: context {
-        // 重置 footnote 计数器
-        if reset-footnote {
-          counter(footnote).update(0)
-        }
+      } else {
         stack(
-          align(center, text(font: fonts.黑体, size: 字号.小四, "西南交通大学本科毕业设计（论文）")),
+          align(center, text(font: header-font, size: header-size, header-text)),
           v(0.25em),
-          line(length: 100%, stroke: stroke-width + black)
+          line(length: 100%, stroke: header-stroke + black),
         )
-      },
-      footer: context {
-        align(center)[
-          #set text(font: fonts.宋体, size: 字号.小四)
-          第#counter(page).display()页
-        ]
       }
-    )
-  }))
+    },
+    footer: context {
+      align(center, if footer-style == "plain" {
+        text(font: fonts.宋体, size: footer-size, counter(page).display())
+      } else {
+        text(font: fonts.宋体, size: footer-size)[第#counter(page).display()页]
+      })
+    },
+  )
   context {
     if calc.even(here().page()) {
       page(header: none, footer: none)[]

@@ -8,15 +8,18 @@
   // 其他参数
   fallback: false,  // 字体缺失时使用 fallback，不显示豆腐块
   lang: "zh",
-  margin: (x: 2.7cm, y: 2.6cm),
+  margin: auto,  // auto 时使用本科模板的页面边距，硕士模板由 documentclass 传入 3cm
   it,
 ) = {
   // 0.  默认参数
   fonts = 字体 + fonts
+  if margin == auto {
+    margin = (x: 2.7cm, y: 2.6cm)
+  }
 
   // 1.  默认参数
   info = (
-    title: ("基于 Typst 的", "南京大学学位论文"),
+    title: ("基于 Typst 的", "西南交通大学学位论文"),
     author: "张三",
   ) + info
 
