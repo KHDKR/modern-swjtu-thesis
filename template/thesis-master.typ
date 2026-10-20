@@ -1,0 +1,182 @@
+#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
+
+// ============================================================
+// 西南交通大学硕士学位论文模板（示例入口）
+// 依据《西南交通大学研究生学位论文撰写范式》（研究生院，2024-07）
+//
+// 使用方法：
+//   1. 修改下方 info 中的个人信息；
+//   2. 按章节顺序填写正文；
+//   3. 在 VS Code 中安装 Tinymist 插件后点击预览，或执行
+//      typst compile thesis-master.typ
+//
+// 如需本科模板，请使用同目录下的 thesis.typ（doctype: "bachelor"）。
+// ============================================================
+
+// 字体说明：
+// 本模板使用系统字体，请确保系统中安装了以下字体：
+// - Times New Roman、Arial、Courier New（英文字体）
+// - SimSun、SimHei、KaiTi、FangSong（Windows 中文字体）
+// - Songti SC、Heiti SC、Kaiti SC（macOS 中文字体）
+// - Noto Serif CJK SC、Noto Sans CJK SC（开源中文字体）
+
+#let (
+  // 布局函数
+  twoside, doc, preface, mainmatter, appendix,
+  // 页面函数
+  fonts-display-page, cover, decl-page, abstract, abstract-en,
+  outline-page, list-of-figures, list-of-tables, notation,
+  acknowledgement, achievements, bilingual-bibliography,
+) = documentclass(
+  // 文档类型：本科生为 "bachelor"，硕士研究生为 "master"，博士为 "doctor"
+  doctype: "master",
+  // 学位类型："academic"（学术型）或 "professional"（专业型）
+  degree: "academic",
+  // 盲审模式：将个人信息替换为黑色方块
+  // anonymous: true,
+  fonts: (
+    宋体: ("Times New Roman", "SimSun", "Songti SC", "Noto Serif CJK SC", "STSong"),
+    黑体: ("Arial", "SimHei", "Heiti SC", "Noto Sans CJK SC", "STHeiti"),
+    楷体: ("Times New Roman", "KaiTi", "Kaiti SC", "Noto Serif CJK SC", "STKaiti"),
+    仿宋: ("Times New Roman", "FangSong", "STFangsong"),
+    等宽: ("Courier New", "Menlo", "IBM Plex Mono"),
+  ),
+  info: (
+    // 论文题目：可用数组表示多行，也可用 "\n" 分隔
+    title: ("基于 Typst 的", "西南交通大学", "硕士学位论文模板"),
+    title-en: "A Typst Template for Master Thesis of Southwest Jiaotong University",
+    student-id: "2023201234",
+    author: "张三",
+    author-en: "Zhang San",
+    department: "计算机与人工智能学院",
+    department-en: "School of Computing and Artificial Intelligence",
+    major: "计算机科学与技术",
+    major-en: "Computer Science and Technology",
+    supervisor: ("李四", "教授"),
+    supervisor-en: "Professor Li Si",
+    // 联合指导导师（可选）
+    // supervisor-ii: ("王五", "副教授"),
+    // supervisor-ii-en: "Professor Wang Wu",
+    submit-date: datetime(year: 2025, month: 6, day: 1),
+    // 封面顶部的分类号、密级等（可选，默认「公开」、单位代码 10613）
+    // clc: "TP391",
+    // udc: "004.9",
+    // secret-level: "公开",
+  ),
+  // 参考文献源文件
+  bibliography: bibliography.with("ref.bib"),
+)
+
+// 文稿设置（硕士模板自动使用 3 cm 页边距）
+#show: doc
+
+// 封面（中文封面 + 英文扉页）
+#cover()
+
+// 学位论文独创性声明 + 学位论文使用授权
+#decl-page()
+
+// 前置部分：页码使用大写罗马数字
+#show: preface
+
+// 中文摘要（关键词 3~8 个）
+#abstract(keywords: ("学位论文", "Typst", "排版", "西南交通大学"))[
+  本文研究了一种基于 Typst 的学位论文排版方法。通过对学校研究生学位论文撰写范式进行分析，设计并实现了一套符合规范的模板。实验结果表明，该模板能够稳定、高效地生成符合要求的学位论文 PDF 文件。
+]
+
+// 英文摘要
+#abstract-en(keywords: ("Thesis", "Typst", "Typesetting", "Southwest Jiaotong University"))[
+  This paper studies a thesis typesetting method based on Typst. By analyzing the university's thesis writing specification, a compliant template is designed and implemented. Experimental results show that the template can generate thesis PDF files that meet the requirements stably and efficiently.
+]
+
+// 目录（从第 1 章开始，列出章、节、条三级标题）
+#outline-page()
+
+// 图目录（可选）
+// #list-of-figures()
+
+// 表目录（可选）
+// #list-of-tables()
+
+// 主要符号表 / 缩略词表（可选，内容通常为三线表）
+// #notation[
+//   #table(
+//     columns: (1fr, 3fr, 1fr),
+//     align: center + horizon,
+//     stroke: none,
+//     table.hline(stroke: 1.5pt),
+//     table.header([符号], [意义], [单位]),
+//     table.hline(stroke: 1pt),
+//     [$S_v$], [空隙总面积], [$mu m^2$],
+//     table.hline(stroke: 1.5pt),
+//   )
+// ]
+
+// 正文部分：页码使用阿拉伯数字，页眉为「西南交通大学硕士学位论文」
+#show: mainmatter
+
+= 绪论
+
+== 研究背景与意义
+
+学位论文是研究生培养的重要成果，其排版质量直接影响论文的阅读体验与评审印象。近年来，Typst 作为一门新兴的排版语言，因其编译速度快、语法简洁而受到关注。
+
+=== 国内外研究现状
+
+国内外已有若干基于 Typst 的学位论文模板，为本模板的设计提供了重要参考。
+
+== 本文主要工作
+
+本文的主要工作包括：分析学校硕士学位论文格式规范；实现封面、声明、摘要、目录等页面；验证模板的排版效果。已有研究表明，规范的排版有助于提升论文质量 @蒋有绪1998。
+
+// 表格示例：三线表，表题居中置于表上方
+#figure(
+  table(
+    columns: 3,
+    align: center + horizon,
+    stroke: none,
+    table.hline(stroke: 1.5pt),
+    table.header([项目], [本科], [硕士]),
+    table.hline(stroke: 1pt),
+    [正文字号], [小四], [小四],
+    [页边距], [2.6 cm], [3.0 cm],
+    table.hline(stroke: 1.5pt),
+  ),
+  caption: [本科与硕士模板格式对比],
+) <tbl:compare>
+
+如@tbl:compare 所示，硕士模板在页边距等方面与本科模板存在差异。公式如 @eqt:ratio 所示：
+
+$ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
+
+// 图片示例（将图片放到 images/ 目录后取消注释）
+// #figure(
+//   image("images/example.png", width: 60%),
+//   caption: [示例图片],
+// ) <fig:example>
+
+= 结论
+
+本文实现并验证了西南交通大学硕士学位论文模板，排版结果符合学校研究生学位论文撰写范式的主要要求。
+
+// 致谢（按学校范式，致谢在参考文献之前）
+#acknowledgement[
+  感谢导师的悉心指导，感谢同学们的支持与帮助。
+]
+
+// 参考文献（GB/T 7714-2015 顺序编码制）
+#bilingual-bibliography()
+
+// 附录：自动编号为「附录 A」「附录 B」……
+#show: appendix
+
+= 补充材料
+
+附录内容。
+
+// 攻读学位期间取得的研究成果
+#achievements[
+  一、攻读硕士学位期间发表的论文
+
+  1. 张三. 基于 Typst 的学位论文模板设计[J]. 某某学报, 2025.
+]
