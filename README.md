@@ -1,4 +1,4 @@
-# Modern SWJTU Thesis
+﻿# Modern SWJTU Thesis
 
 > **A modern Typst template for the thesis of Southwest Jiaotong University (SWJTU).** > _Note: The documentation and the template itself are primarily in Chinese._
 
@@ -71,7 +71,7 @@ Typst 是可用于出版的可编程标记语言，拥有变量、函数与包�
 
 ## 硕士学位论文模板
 
-硕士模板依据研究生院《西南交通大学研究生学位论文撰写范式》（2024 年 7 月版）实现，与本科模板共用同一套底层布局，通过 `documentclass` 的 `doctype` 参数切换：
+硕士模板依据研究生院《西南交通大学研究生学位论文撰写范式》（2024 年 7 月版）实现，并用 Word 导出的 PDF 逐项校准了封面、声明、摘要、目录与正文的坐标，与本科模板共用同一套底层布局，通过 `documentclass` 的 `doctype` 参数切换：
 
 ```typst
 #let (doc, preface, mainmatter, ...) = documentclass(
@@ -88,7 +88,7 @@ Typst 是可用于出版的可编程标记语言，拥有变量、函数与包�
 - **摘要**：中文摘要（小三号黑体标题、小四号正文、固定行距 20 磅）与英文摘要 `ABSTRACT`；
 - **目录**：目录、图目录、表目录、主要符号表 / 缩略词表，前置部分使用大写罗马数字页码；
 - **正文**：A4、四边 3 cm 页边距，正文小四号宋体、固定行距 20 磅、首行缩进 2 字符、两端对齐；标题按「章 / 节 / 条 / 款」四级设置（黑体，段前段后距按范式表 2-2）；
-- **页眉页脚**：页眉五号宋体居中并加 0.75 磅单横线，页码小五号 Times New Roman 居中；正文页眉统一为「西南交通大学硕士学位论文」；
+- **页眉页脚**：页眉小五号宋体居中并加 0.8 磅单横线，页码小五号 Times New Roman 居中；正文页眉统一为「西南交通大学硕士学位论文」；
 - **文后**：致谢、参考文献（五号字、悬挂缩进）、附录（自动编号「附录 A」「附录 B」……）、攻读学位期间取得的研究成果。
 
 已知差异 / 待完善（欢迎 PR）：
@@ -349,3 +349,4 @@ PS：2025 年 2 月进行了 Typst 0.13 的迁移更新。
 ## License
 
 This project is licensed under the MIT License.
+

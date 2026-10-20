@@ -68,10 +68,14 @@
     pagebreak(weak: true)
     set page(
       margin: 3cm,
+      header-ascent: 7.4pt,
+      footer-descent: 0pt,
       header: master-header(header-title, fonts: fonts),
       footer: master-footer(numbering: "I", fonts: fonts),
     )
-    v(24pt)
+    v(28.94pt)
     render
   }
 }
+
+

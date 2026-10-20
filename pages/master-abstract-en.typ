@@ -35,6 +35,8 @@
   master-pagebreak(twoside: twoside)
   set page(
     margin: 3cm,
+    header-ascent: 7.4pt,
+    footer-descent: 0pt,
     header: master-header(header-title, fonts: fonts),
     footer: master-footer(numbering: "I", fonts: fonts),
   )
@@ -43,33 +45,33 @@
   set text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)
   set par(leading: 8pt, spacing: 0pt, justify: true, first-line-indent: (amount: 2em, all: true))
 
-  // 4.  标题（距页面顶端 24 磅，与 Word 原版对齐）
-  v(24pt)
+  // 4.  标题（与 Word 原版墨迹位置对齐）
+  v(26.44pt)
   block(
     width: 100%,
     above: 0pt,
-    below: 23pt,
+    below: 25.67pt,
     align(center, text(font: fonts.黑体, size: 字号.小三, weight: "bold", title)),
   )
 
   // 5.  摘要正文
   body
 
-  // 6.  关键词
+  // 6.  关键词（顶格，悬挂缩进与 Word 对齐）
   v(keyword-gap)
   block(
+    width: 100%,
     above: 0pt,
     below: 0pt,
-    grid(
-      columns: (6.2em, 1fr),
-      column-gutter: 0pt,
-      align: (left + top, left + top),
-      text(weight: "bold", [Keywords:]),
-      if keywords.len() == 0 {
-        ""
-      } else {
+    {
+      set par(first-line-indent: 0pt, hanging-indent: 6.2em, leading: 8pt, spacing: 0pt, justify: true)
+      text(weight: "bold", [Keywords:])
+      if keywords.len() > 0 {
+        h(0.4em)
         keywords.join(", ")
-      },
-    ),
+      }
+    },
   )
 }
+
+

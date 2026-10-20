@@ -98,7 +98,7 @@
 // 表目录（可选）
 // #list-of-tables()
 
-// 主要符号表 / 缩略词表（可选，内容通常为三线表）
+// 主要符号表（可选，内容通常为三线表）
 // #notation[
 //   #table(
 //     columns: (1fr, 3fr, 1fr),
@@ -108,6 +108,20 @@
 //     table.header([符号], [意义], [单位]),
 //     table.hline(stroke: 1pt),
 //     [$S_v$], [空隙总面积], [$mu m^2$],
+//     table.hline(stroke: 1.5pt),
+//   )
+// ]
+
+// 缩略词表（可选）
+// #notation(title: "缩略词表")[
+//   #table(
+//     columns: (1fr, 2fr, 2fr),
+//     align: center + horizon,
+//     stroke: none,
+//     table.hline(stroke: 1.5pt),
+//     table.header([英文缩写], [英文全称], [中文全称]),
+//     table.hline(stroke: 1pt),
+//     [AUC], [Area Under the Curve], [曲线下面积],
 //     table.hline(stroke: 1.5pt),
 //   )
 // ]
@@ -180,3 +194,4 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
 
   1. 张三. 基于 Typst 的学位论文模板设计[J]. 某某学报, 2025.
 ]
+

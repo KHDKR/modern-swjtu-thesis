@@ -1,14 +1,11 @@
-﻿#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
+#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
 #import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生封面（中文封面 + 英文扉页）
-// 版式按《西南交通大学研究生学位论文撰写范式》中的硕士封面逐项对齐：
-//   - 分类号、密级、单位代码行：小四号宋体，后接下划线；
-//   - 校名：26 pt 黑体加粗；「硕士学位论文」：22 pt 宋体加粗；
-//   - 学位论文题目：18 pt 黑体，带下划线；
-//   - 学科专业等栏目：16 pt 宋体，标签四字分散对齐，值写在下划线上；
-//   - 日期：16 pt 宋体居中。
-// 各元素的纵向位置取自 Word 原版，按绝对坐标放置。
+// 全部元素按 Word 原版 PDF 的坐标逐项复刻：
+//   - 中文封面：分类号/密级/单位代码、校名、学位类别、加下划线的题目、五个栏目、日期；
+//   - 英文扉页：提交说明、英文题目、Discipline 等栏目、日期。
+// 坐标单位为 pt，原点为纸张左上角（封面页页边距为 0）。
 #let master-cover(
   // documentclass 传入的参数
   doctype: "master",
@@ -19,7 +16,7 @@
   fonts: (:),
   info: (:),
   // 其他参数
-  underline-stroke: 0.75pt,
+  underline-stroke: 0.6pt,
   title-size: 18pt,
   anonymous-info-keys: ("student-id", "author", "supervisor", "supervisor-ii", "author-en", "supervisor-en"),
   datetime-display: datetime-display,
@@ -63,129 +60,110 @@
 
   // 3.  内部辅助函数
   let hide(key) = anonymous and (key in anonymous-info-keys)
-
-  // 下划线单元格：可承载居中书写的值
-  let rule(width: 100%, content: none) = block(
-    width: width,
-    height: 1.2em,
-    inset: 0pt,
-    stroke: (bottom: underline-stroke + black),
-    align(center + horizon, content),
-  )
-
-  // 四字标签分散对齐（两字标签放在首尾两格，与 Word 版式一致）
-  let label-slot(chars) = grid(
-    columns: (1fr, 1fr, 1fr, 1fr),
-    align: center + horizon,
-    ..chars.map(c => if c == none { [] } else { c }),
-  )
-
-  // 中文栏目行：标签 + 下划线值
-  let field(chars, value) = grid(
-    columns: (96pt, 1fr),
-    align: horizon,
-    label-slot(chars),
-    rule(content: value),
-  )
+  // 中文字形墨迹相对 block 顶端的偏移（实测值，随字号线性变化）
+  let cjk-dy(y, size) = y * 1pt + 0.109 * size
+  // 西文数字墨迹偏移
+  let latin-dy(y, size) = y * 1pt - 0.057 * size
+  let put(x, y, body) = place(top + left, dx: x * 1pt, dy: y * 1pt, body)
+  let hline(x, y, width, stroke: underline-stroke) = put(x, y, line(length: width * 1pt, stroke: stroke))
 
   // 4.  中文封面
   pagebreak(weak: true)
-  set page(
-    margin: 0pt,
-    header: none,
-    footer: none,
-    numbering: none,
-  )
+  set page(margin: 0pt, header: none, footer: none, numbering: none)
+  set text(font: fonts.宋体, top-edge: 0.75em, bottom-edge: -0.25em)
 
-  // 4.1 顶部分类号、密级、单位代码
-  place(top + left, dx: 2.6cm, dy: 2.674cm, block(width: 15.8cm, text(font: fonts.宋体, size: 字号.小四)[
-    #grid(
-      columns: (auto, 90pt, 1fr, 4.6cm),
-      align: horizon,
-      [中国图书分类号],
-      rule(width: 90pt, content: info.clc),
-      [],
-      grid(
-        columns: (auto, 1fr),
-        align: horizon,
-        [密级],
-        rule(content: info.secret-level),
-      ),
-    )
-  ]))
+  // 4.1 顶部分类号、密级、单位代码（12 pt 宋体）
+  put(73.7, 79.11, text(size: 12pt, "中国图书分类号"))
+  put(397.8, 79.11, text(size: 12pt, "密级"))
+  put(73.7, 102.51, text(size: 12pt, "国际图书分类号"))
+  put(397.8, 102.51, text(size: 12pt, "单位代码"))
 
-  place(top + left, dx: 2.6cm, dy: 3.507cm, block(width: 15.8cm, text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)[
-    #grid(
-      columns: (auto, 90pt, 1fr, 4.6cm),
-      align: horizon,
-      [国际图书分类号],
-      rule(width: 90pt, content: info.udc),
-      [],
-      grid(
-        columns: (auto, 1fr),
-        align: horizon,
-        [单位代码],
-        rule(content: info.school-code),
-      ),
-    )
-  ]))
+  hline(157.7, 89.4, 90)
+  hline(421.8, 89.4, 100)
+  hline(157.7, 112.8, 90)
+  hline(457.8, 112.8, 64)
+
+  if info.clc != "" {
+    put(157.7, 79.11, block(width: 90pt, align(center, text(size: 12pt, info.clc))))
+  }
+  if info.udc != "" {
+    put(157.7, 102.51, block(width: 90pt, align(center, text(size: 12pt, info.udc))))
+  }
+  if info.secret-level != "" {
+    put(421.8, 79.11, block(width: 100pt, align(center, text(size: 12pt, info.secret-level))))
+  }
+  put(457.8, 100.12, block(width: 64pt, align(center, text(size: 12pt, info.school-code))))
 
   // 4.2 校名与学位类别
-  place(center + top, dy: 7.165cm, text(font: fonts.黑体, size: 26pt, weight: "bold")[西#h(0.5em)南#h(0.5em)交#h(0.5em)通#h(0.5em)大#h(0.5em)学])
-  place(center + top, dy: 8.632cm, text(font: fonts.宋体, size: 22pt, weight: "bold")[硕#h(0.5em)士#h(0.5em)学#h(0.5em)位#h(0.5em)论#h(0.5em)文])
+  put(0, 210.04, block(width: 595.3pt, align(center, text(font: fonts.黑体, size: 26pt, weight: "bold")[
+    西#h(13pt)南#h(13pt)交#h(13pt)通#h(13pt)大#h(13pt)学
+  ])))
+  put(0, 250.71, block(width: 595.3pt, align(center, text(font: fonts.宋体, size: 22pt, weight: "bold")[
+    硕#h(11pt)士#h(11pt)学#h(11pt)位#h(11pt)论#h(11pt)文
+  ])))
 
-  // 4.3 学位论文题目（加下划线）
-  place(top + left, dx: 2.6cm, dy: 12.35cm, block(width: 15.8cm, align(center, {
-    set par(leading: 1.35em)
-    underline(
-      stroke: underline-stroke,
-      text(font: fonts.黑体, size: title-size, info.title.join("\n")),
-    )
+  // 4.3 学位论文题目（18 pt 黑体加下划线，居中）
+  put(0, 361.47, block(width: 595.3pt, align(center, {
+    set par(leading: 13pt)
+    underline(stroke: underline-stroke, text(font: fonts.黑体, size: title-size, info.title.join("\n")))
   })))
 
   // 4.4 学科专业、学号、作者姓名、指导老师、学院
-  let field-data = (
-    (16.210cm, ("学", "科", "专", "业"), "major", info.major),
-    (17.311cm, ("学", none, none, "号"), "student-id", info.student-id),
-    (18.398cm, ("作", "者", "姓", "名"), "author", info.author),
-    (19.502cm, ("指", "导", "老", "师"), "supervisor", info.supervisor.join(" ")),
-    (20.610cm, ("学", none, none, "院"), "department", info.department),
-  )
-  for (y, chars, key, value) in field-data {
-    place(top + left, dx: 2.6cm, dy: y, block(width: 9.05cm, text(font: fonts.宋体, size: 字号.三号, field(chars, if hide(key) { "████████" } else { value }))))
+  // 值过长时等比缩小，但最小保留 12 pt，避免出现难以辨认的小字
+  let fit-value(value, width, font) = context {
+    let base = text(font: font, size: 16pt, value)
+    let w = measure(base).width
+    if w <= width * 1pt {
+      base
+    } else {
+      text(font: font, size: calc.max(12pt, 16pt * ((width * 1pt) / w)), value)
+    }
   }
+  let label-slot(chars) = grid(
+    columns: (26.7pt, 26.5pt, 26.5pt, 16.3pt),
+    ..chars.map(c => if c == none { [] } else { text(size: 16pt, c) }),
+  )
+  let field-row(y, chars, key, value) = {
+    put(175.7, y + 1.73, label-slot(chars))
+    hline(271.8, y + 15.4, 159.9, stroke: 0.7pt)
+    if not hide(key) {
+      put(181.8, y + 1.73, block(width: 340pt, align(center, fit-value(value, 159.9, fonts.宋体))))
+    }
+  }
+  field-row(461.9, ("学", "科", "专", "业"), "major", info.major)
+  field-row(493.1, ("学", none, none, "号"), "student-id", info.student-id)
+  field-row(524.3, ("作", "者", "姓", "名"), "author", info.author)
+  field-row(555.5, ("指", "导", "老", "师"), "supervisor", info.supervisor.join(" "))
+  field-row(586.8, ("学", none, none, "院"), "department", info.department)
 
   // 4.5 日期
-  place(center + top, dy: 25.008cm, text(font: fonts.宋体, size: 字号.三号, datetime-display(info.submit-date)))
+  put(0, 712.73, block(width: 595.3pt, align(center, text(size: 16pt, datetime-display(info.submit-date)))))
 
   // 5.  英文扉页
   pagebreak(weak: true)
 
-  place(center + top, dy: 3.644cm, text(font: fonts.宋体, size: 字号.四号, weight: "bold", "A Thesis Submitted to"))
-  place(center + top, dy: 4.731cm, text(font: fonts.宋体, size: 字号.四号, weight: "bold", "Southwest Jiaotong University for Master Degree"))
+  put(0, 102.80, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 14pt, weight: "bold", "A Thesis Submitted to"))))
+  put(0, 134.00, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 14pt, weight: "bold", "Southwest Jiaotong University for Master Degree"))))
 
-  place(top + left, dx: 2.6cm, dy: 8.149cm, block(width: 15.8cm, align(center, {
-    set par(leading: 1.5em)
-    text(font: fonts.宋体, size: 22pt, weight: "bold", info.title-en.join("\n"))
+  put(85.1, 230.75, block(width: 425.2pt, align(center, {
+    set par(leading: 9.2pt)
+    text(font: "Times New Roman", size: 22pt, weight: "bold", info.title-en.join("\n"))
   })))
 
-  let en-field-data = (
-    (15.981cm, "Discipline", "major-en", info.major-en),
-    (17.071cm, "Student ID", "student-id", info.student-id),
-    (18.175cm, "Author", "author-en", info.author-en),
-    (19.279cm, "Supervisor", "supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }),
-    (20.380cm, "School", "department-en", info.department-en),
-  )
-  for (y, label, key, value) in en-field-data {
-    place(top + left, dx: 2.6cm, dy: y, block(width: 15.8cm, text(font: fonts.宋体, size: 字号.三号, grid(
-      columns: (110pt, 1fr),
-      align: horizon,
-      label,
-      rule(content: if hide(key) { "████████" } else { value }),
-    ))))
+  let en-field(y, label, key, value) = {
+    put(173.0, y - 0.91, block(width: 73.4pt, align(right, text(font: "Times New Roman", size: 16pt, label))))
+    hline(246.4, y + 16.0, 160, stroke: 0.7pt)
+    if not hide(key) {
+      put(176.4, y - 0.91, block(width: 300pt, align(center, fit-value(value, 160, "Times New Roman"))))
+    }
   }
+  en-field(453.6, "Discipline", "major-en", info.major-en)
+  en-field(484.8, "Student ID", "student-id", info.student-id)
+  en-field(516.0, "Author", "author-en", info.author-en)
+  en-field(547.2, "Supervisor", "supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" })
+  en-field(578.4, "School", "department-en", info.department-en)
 
-  place(center + top, dy: 25.612cm, text(font: fonts.宋体, size: 字号.三号, datetime-en-display(info.submit-date)))
+  put(0, 725.69, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
 }
 
 

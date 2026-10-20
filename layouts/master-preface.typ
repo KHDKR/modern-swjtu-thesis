@@ -9,17 +9,17 @@
 //   - 从中文摘要开始行距固定值 20 磅
 // ============================================================
 
-// 页眉：五号宋体居中，下方 0.75 磅单横线
+// 页眉：小五号宋体居中，下方 0.8 磅单横线（与 Word 原版一致）
 #let master-header(
   title,
   fonts: (:),
-  stroke-width: 0.75pt,
+  stroke-width: 0.8pt,
   gap: 0.25em,
 ) = {
   fonts = 字体 + fonts
   set align(center)
   stack(
-    text(font: fonts.宋体, size: 字号.五号, title),
+    text(font: fonts.宋体, size: 字号.小五, title),
     v(gap),
     line(length: 100%, stroke: stroke-width + black),
   )

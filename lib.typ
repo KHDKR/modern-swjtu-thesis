@@ -110,6 +110,8 @@
       )
       let opts = (
         margin: margin,
+        header-ascent: if doctype == "master" or doctype == "doctor" { 7.4pt } else { none },
+        footer-descent: if doctype == "master" or doctype == "doctor" { 0pt } else { none },
         info: info + named.at("info", default: (:)),
         fonts: fonts + named.at("fonts", default: (:)),
       ) + named
@@ -132,16 +134,19 @@
           display-header: false,
           header-text: if doctype == "doctor" { "西南交通大学博士学位论文" } else { "西南交通大学硕士学位论文" },
           header-font: fonts.宋体,
-          header-size: 字号.五号,
-          header-stroke: 0.75pt,
+          header-size: 字号.小五,
+          header-stroke: 0.8pt,
           footer-style: "plain",
           blank-page-before: false,
+          page-header-ascent: 7.4pt,
+          page-footer-descent: 0pt,
           footer-size: 字号.小五,
-          heading-size: (字号.三号, 字号.四号, 字号.四号, 字号.小四),
-          heading-above: (24pt, 18pt, 12pt, 12pt),
-          heading-below: (18pt, 6pt, 6pt, 6pt),
+          numbering: custom-numbering.with(first-level: "第1章　", depth: 4, "1.1 "),
+          heading-size: (字号.小三, 字号.四号, 字号.四号, 字号.小四),
+          heading-above: (24pt, 23.3pt, 12pt, 12pt),
+          heading-below: (18pt, 13.8pt, 6pt, 6pt),
           heading-weight: ("regular", "regular", "regular", "regular"),
-          heading-top-space: 24pt,
+          heading-top-space: 29pt,
           leading: 8pt,
           spacing: 0pt,
           caption-style: it => it,
@@ -150,6 +155,7 @@
             size: 字号.小四,
             top-edge: 0.75em,
             bottom-edge: -0.25em,
+            cjk-latin-spacing: none,
           ),
         ) + named + (fonts: fonts + named.at("fonts", default: (:)))
         mainmatter(..args.pos(), ..opts)
@@ -344,7 +350,7 @@
           twoside: twoside,
           title: "图目录",
           header-title: "图目录",
-          title-vspace: 23pt,
+          title-vspace: 25.17pt,
           title-text-args: (font: fonts.黑体, size: 字号.小三),
         ) + named
         list-of-figures(..args.pos(), ..opts, fonts: fonts + named.at("fonts", default: (:)))
@@ -365,7 +371,7 @@
           twoside: twoside,
           title: "表目录",
           header-title: "表目录",
-          title-vspace: 23pt,
+          title-vspace: 25.17pt,
           title-text-args: (font: fonts.黑体, size: 字号.小三),
         ) + named
         list-of-tables(..args.pos(), ..opts, fonts: fonts + named.at("fonts", default: (:)))
@@ -438,5 +444,10 @@
     },
   )
 }
+
+
+
+
+
 
 

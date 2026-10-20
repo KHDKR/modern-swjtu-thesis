@@ -1,4 +1,4 @@
-#import "../utils/style.typ": 字号, 字体
+﻿#import "../utils/style.typ": 字号, 字体
 #import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
 // 硕士研究生注释表页（主要符号表 / 缩略词表）
@@ -13,7 +13,7 @@
   title: "主要符号表",
   header-title: auto,
   outlined: false,
-  title-gap: (0pt, 23pt),
+  title-gap: (0pt, 25.17pt),
   body,
 ) = {
   // 1.  默认参数
@@ -26,12 +26,14 @@
   master-pagebreak(twoside: twoside)
   set page(
     margin: 3cm,
+    header-ascent: 7.4pt,
+    footer-descent: 0pt,
     header: master-header(header-title, fonts: fonts),
     footer: master-footer(numbering: "I", fonts: fonts),
   )
 
   // 3.  标题（距页面顶端 24 磅）
-  v(24pt)
+  v(28.94pt)
   block(
     width: 100%,
     above: title-gap.at(0),
@@ -40,6 +42,8 @@
   )
 
   // 4.  内容（通常为三线表）
-  set text(font: fonts.宋体, size: 字号.五号)
+  set text(font: fonts.宋体, size: 字号.小四)
   body
 }
+
+

@@ -41,6 +41,9 @@
   // 页脚样式："prefix" 为「第 X 页」，"plain" 为纯页码
   footer-style: "prefix",
   footer-size: auto,
+  // 页眉、页脚相对内容区的距离（none 表示使用 Typst 默认值）
+  page-header-ascent: none,
+  page-footer-descent: none,
   // 正文开始前若当前页为偶数页，是否插入空白页（双面打印用）
   blank-page-before: true,
   reset-footnote: true,
@@ -201,6 +204,8 @@
         text(font: fonts.宋体, size: footer-size)[第#counter(page).display()页]
       })
     },
+    ..(if page-header-ascent != none { (header-ascent: page-header-ascent) } else { (:) }),
+    ..(if page-footer-descent != none { (footer-descent: page-footer-descent) } else { (:) }),
   )
   if blank-page-before {
     context {

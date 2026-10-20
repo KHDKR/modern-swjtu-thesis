@@ -9,6 +9,8 @@
   fallback: false,  // 字体缺失时使用 fallback，不显示豆腐块
   lang: "zh",
   margin: auto,  // auto 时使用本科模板的页面边距，硕士模板由 documentclass 传入 3cm
+  header-ascent: none,  // 页眉内容相对内容区上边界的上升距离
+  footer-descent: none,  // 页脚内容相对内容区下边界的下降距离
   it,
 ) = {
   // 0.  默认参数
@@ -32,6 +34,12 @@
   // 3.  基本的样式设置
   set text(font: fonts.宋体, fallback: fallback, lang: lang)
   set page(margin: margin)
+  if header-ascent != none {
+    set page(header-ascent: header-ascent)
+  }
+  if footer-descent != none {
+    set page(footer-descent: footer-descent)
+  }
 
   // 4.  PDF 元信息
   set document(
