@@ -1,4 +1,4 @@
-#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
+﻿#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
 #import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生封面（中文封面 + 英文扉页）
@@ -152,9 +152,10 @@
 
   let en-field(y, label, key, value) = {
     put(173.0, y - 0.91, block(width: 73.4pt, align(right, text(font: "Times New Roman", size: 16pt, label))))
-    hline(246.4, y + 16.0, 160, stroke: 0.7pt)
+    // 英文栏目的值紧接标签书写，下框线随内容延伸到右侧页边距
+    hline(252, y + 16.0, 258, stroke: 0.7pt)
     if not hide(key) {
-      put(176.4, y - 0.91, block(width: 300pt, align(center, fit-value(value, 160, "Times New Roman"))))
+      put(252, y - 0.91, block(width: 258pt, align(left, fit-value(value, 258, "Times New Roman"))))
     }
   }
   en-field(453.6, "Discipline", "major-en", info.major-en)
@@ -165,5 +166,6 @@
 
   put(0, 725.69, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
 }
+
 
 
