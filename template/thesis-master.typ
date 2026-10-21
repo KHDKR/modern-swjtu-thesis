@@ -1,4 +1,4 @@
-#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
+﻿#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
 
 // ============================================================
 // 西南交通大学硕士学位论文模板（示例入口）
@@ -146,7 +146,7 @@
 // 表格示例：三线表，表题居中置于表上方
 #figure(
   table(
-    columns: 3,
+    columns: (1fr, 1fr, 1fr),
     align: center + horizon,
     stroke: none,
     table.hline(stroke: 1.5pt),
@@ -157,7 +157,7 @@
     table.hline(stroke: 1.5pt),
   ),
   caption: [本科与硕士模板格式对比],
-) <tbl:compare>
+) <compare>
 
 如@tbl:compare 所示，硕士模板在页边距等方面与本科模板存在差异。公式如 @eqt:ratio 所示：
 
@@ -194,4 +194,5 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
 
   1. 张三. 基于 Typst 的学位论文模板设计[J]. 某某学报, 2025.
 ]
+
 

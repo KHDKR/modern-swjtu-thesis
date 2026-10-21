@@ -52,6 +52,10 @@
   // caption 样式
   caption-style: strong,
   caption-size: 字号.五号,
+  // 图表整体段前段后距，以及图表与图题之间的间距（硕士用 12 / 12 / 6）
+  figure-above: auto,
+  figure-below: auto,
+  figure-gap: 0.65em,
   // figure 计数
   show-figure: i-figured.show-figure.with(numbering: "1-1"),
   // equation 计数
@@ -120,6 +124,9 @@
   set figure.caption(separator: separator)
   show figure.caption: caption-style
   show figure.caption: set text(font: fonts.宋体, size: 字号.五号)
+  // 3.5.1 图表与图题的段间距：表题在表上方，图题在图下方
+  set figure(gap: figure-gap)
+  show figure: set block(above: figure-above, below: figure-below)
   // 3.6 优化列表显示
   //     术语列表 terms 不应该缩进
   show terms: set par(first-line-indent: 0pt)
@@ -218,3 +225,6 @@
 
   it
 }
+
+
+

@@ -141,7 +141,7 @@
           page-header-ascent: 7.4pt,
           page-footer-descent: 0pt,
           footer-size: 字号.小五,
-          numbering: custom-numbering.with(first-level: "第1章　", depth: 4, "1.1 "),
+          numbering: custom-numbering.with(first-level: "第1章 ", depth: 4, "1.1 "),
           heading-size: (字号.小三, 字号.四号, 字号.四号, 字号.小四),
           heading-above: (24pt, 23.3pt, 12pt, 12pt),
           heading-below: (18pt, 13.8pt, 6pt, 6pt),
@@ -150,6 +150,10 @@
           leading: 8pt,
           spacing: 0pt,
           caption-style: it => it,
+          figure-above: 12pt,
+          figure-below: 12pt,
+          figure-gap: 6pt,
+
           text-args: (
             font: fonts.宋体,
             size: 字号.小四,
@@ -444,6 +448,11 @@
     },
   )
 }
+
+
+
+
+
 
 
 
