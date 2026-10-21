@@ -1,4 +1,4 @@
-#import "../utils/style.typ": 字号, 字体
+﻿#import "../utils/style.typ": 字号, 字体
 #import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
 // 硕士研究生中文摘要页
@@ -67,11 +67,13 @@
     below: 0pt,
     {
       set par(first-line-indent: 0pt, hanging-indent: 4.4em, leading: 8pt, spacing: 0pt, justify: true)
-      text(weight: "bold", [关键词：])
+      text(weight: "bold", stroke: 0.015em + 0.25pt, [关键词：])
       if keywords.len() > 0 {
         keywords.join("，")
       }
     },
   )
 }
+
+
 

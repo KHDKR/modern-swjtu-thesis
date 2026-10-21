@@ -1,4 +1,4 @@
-#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
+﻿#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
 
 // ============================================================
 // 西南交通大学硕士学位论文模板（示例入口）
@@ -92,39 +92,42 @@
 // 目录（从第 1 章开始，列出章、节、条三级标题）
 #outline-page()
 
-// 图目录（可选）
-// #list-of-figures()
+// 图目录（自动收集图题、编号与页码）
+#list-of-figures()
 
-// 表目录（可选）
-// #list-of-tables()
+// 表目录（自动收集表题、编号与页码）
+#list-of-tables()
 
-// 主要符号表（可选，内容通常为三线表）
-// #notation[
-//   #table(
-//     columns: (1fr, 3fr, 1fr),
-//     align: center + horizon,
-//     stroke: none,
-//     table.hline(stroke: 1.5pt),
-//     table.header([符号], [意义], [单位]),
-//     table.hline(stroke: 1pt),
-//     [$S_v$], [空隙总面积], [$mu m^2$],
-//     table.hline(stroke: 1.5pt),
-//   )
-// ]
+// 主要符号表（可选，按论文实际需要启用）
+#notation[
+  #table(
+    columns: (1fr, 3fr, 1fr),
+    align: (center + horizon, left + horizon, center + horizon),
+    stroke: none,
+    table.hline(stroke: 1.5pt),
+    table.header([符号], [意义], [单位]),
+    table.hline(stroke: 1pt),
+    [$S_v$], [空隙总面积], [$mu m^2$],
+    [$rho$], [材料密度], [$g \/ "cm"^3$],
+    [$T$], [绝对温度], [$K$],
+    table.hline(stroke: 1.5pt),
+  )
+]
 
-// 缩略词表（可选）
-// #notation(title: "缩略词表")[
-//   #table(
-//     columns: (1fr, 2fr, 2fr),
-//     align: center + horizon,
-//     stroke: none,
-//     table.hline(stroke: 1.5pt),
-//     table.header([英文缩写], [英文全称], [中文全称]),
-//     table.hline(stroke: 1pt),
-//     [AUC], [Area Under the Curve], [曲线下面积],
-//     table.hline(stroke: 1.5pt),
-//   )
-// ]
+// 缩略词表（可选，按论文实际需要启用）
+#notation(title: "缩略词表")[
+  #table(
+    columns: (1fr, 2fr, 2fr),
+    align: (center + horizon, left + horizon, left + horizon),
+    stroke: none,
+    table.hline(stroke: 1.5pt),
+    table.header([英文缩写], [英文全称], [中文全称]),
+    table.hline(stroke: 1pt),
+    [AUC], [Area Under the Curve], [曲线下面积],
+    [PDF], [Portable Document Format], [便携式文档格式],
+    table.hline(stroke: 1.5pt),
+  )
+]
 
 // 正文部分：页码使用阿拉伯数字，页眉为「西南交通大学硕士学位论文」
 #show: mainmatter
@@ -144,8 +147,8 @@
 本文的主要工作包括：分析学校硕士学位论文格式规范；实现封面、声明、摘要、目录等页面；验证模板的排版效果。已有研究表明，规范的排版有助于提升论文质量 @蒋有绪1998。
 
 // 表格示例：三线表，表题居中置于表上方。
-// 标签不要带类型前缀：写成 <compare>，引用时写 @tbl:compare；
-// 图片同理（标签 <logo>，引用 @fig:logo），公式同理（标签 <ratio>，引用 @eqt:ratio）。
+// 标签不要带类型前缀：写成 <tab1>，引用时写 @tbl:tab1；
+// 图片同理（标签 <fig1>，引用 @fig:fig1），公式同理（标签 <eq1>，引用 @eqt:eq1）。
 #figure(
   table(
     columns: (1fr, 1fr, 1fr),
@@ -159,17 +162,60 @@
     table.hline(stroke: 1.5pt),
   ),
   caption: [本科与硕士模板格式对比],
-) <compare>
+) <tab1>
 
-如@tbl:compare 所示，硕士模板在页边距等方面与本科模板存在差异。公式如 @eqt:ratio 所示：
+如@tbl:tab1 所示，硕士模板在页边距等方面与本科模板存在差异。
 
-$ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
+#figure(
+  image("images/fig-sample.png", width: 65%),
+  caption: [模板生成结果的示例图],
+) <fig1>
 
-// 图片示例（将图片放到 images/ 目录后取消注释）
-// #figure(
-//   image("images/example.png", width: 60%),
-//   caption: [示例图片],
-// ) <fig:example>
+如图 @fig:fig1 所示，模板可以自动生成图表编号与目录条目。如 @eqt:eq1 所示：
+
+$ phi.alt := (1 + sqrt(5)) / 2 $ <eq1>
+
+= 模板功能验证
+
+== 图表排版
+
+本节用于验证图目录、表目录的自动收集功能。模板会为每个图表分配「章号-序号」形式的编号，并把图题、表题和页码写入对应的目录中。
+
+#figure(
+  image("images/fig-sample.png", width: 55%),
+  caption: [第二张示例图，用于验证图目录中的多条记录],
+) <fig2>
+
+#figure(
+  table(
+    columns: (1fr, 1fr, 1fr, 1.4fr),
+    align: center + horizon,
+    stroke: none,
+    table.hline(stroke: 1.5pt),
+    table.header([功能], [本科], [硕士], [说明]),
+    table.hline(stroke: 1pt),
+    [封面], [支持], [支持], [按学校 Word 范式排版],
+    [图目录], [可选], [可选], [自动生成编号与页码],
+    [符号表], [可选], [可选], [三线表形式],
+    table.hline(stroke: 1.5pt),
+  ),
+  caption: [模板功能对照表],
+) <tab2>
+
+@tbl:tab2 列出了模板的主要功能，@fig:fig2 与 @tbl:tab1 均可正常交叉引用。
+
+== 公式排版
+
+多行公式同样会按章编号，并与公式主体右对齐：
+
+$ a &= b + c + d \
+  &= e + f + g $ <eq2>
+
+@eqt:eq2 展示了多行对齐的写法。
+
+== 小结
+
+本章验证了图表、公式、目录与交叉引用功能。
 
 = 结论
 
@@ -188,7 +234,25 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <ratio>
 
 = 补充材料
 
-附录内容。
+附录内容，包含表格 @tbl:tab-app。
+
+#figure(
+  table(
+    columns: 2,
+    align: center + horizon,
+    stroke: none,
+    table.hline(stroke: 1.5pt),
+    table.header([项目], [取值]),
+    table.hline(stroke: 1pt),
+    [示例参数], [1.0],
+    table.hline(stroke: 1.5pt),
+  ),
+  caption: [附录中的表格],
+) <tab-app>
+
+$ x = y + z $ <eq-app>
+
+附录公式见 @eqt:eq-app。
 
 // 攻读学位期间取得的研究成果
 #achievements[

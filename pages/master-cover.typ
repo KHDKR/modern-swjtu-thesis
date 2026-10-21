@@ -95,10 +95,10 @@
   put(457.8, 100.12, block(width: 64pt, align(center, text(size: 12pt, info.school-code))))
 
   // 4.2 校名与学位类别
-  put(0, 210.04, block(width: 595.3pt, align(center, text(font: fonts.黑体, size: 26pt, weight: "bold")[
+  put(0, 210.04, block(width: 595.3pt, align(center, text(font: fonts.黑体, size: 26pt, weight: "bold", stroke: 0.015em + 0.25pt)[
     西#h(13pt)南#h(13pt)交#h(13pt)通#h(13pt)大#h(13pt)学
   ])))
-  put(0, 250.71, block(width: 595.3pt, align(center, text(font: fonts.宋体, size: 22pt, weight: "bold")[
+  put(0, 250.71, block(width: 595.3pt, align(center, text(font: fonts.宋体, size: 22pt, weight: "bold", stroke: 0.015em + 0.25pt)[
     硕#h(11pt)士#h(11pt)学#h(11pt)位#h(11pt)论#h(11pt)文
   ])))
 
@@ -109,14 +109,14 @@
   })))
 
   // 4.4 学科专业、学号、作者姓名、指导老师、学院
-  // 值过长时等比缩小，但最小保留 12 pt，避免出现难以辨认的小字
+  // 值过长时等比缩小，但最小保留 11 pt，避免出现难以辨认的小字
   let fit-value(value, width, font) = context {
     let base = text(font: font, size: 16pt, value)
     let w = measure(base).width
     if w <= width * 1pt {
       base
     } else {
-      text(font: font, size: calc.max(12pt, 16pt * ((width * 1pt) / w)), value)
+      text(font: font, size: calc.max(11pt, 16pt * ((width * 1pt) / w)), value)
     }
   }
   let label-slot(chars) = grid(
@@ -127,7 +127,7 @@
     put(175.7, y + 1.73, label-slot(chars))
     hline(271.8, y + 15.4, 159.9, stroke: 0.7pt)
     if not hide(key) {
-      put(181.8, y + 1.73, block(width: 340pt, align(center, fit-value(value, 159.9, fonts.宋体))))
+      put(271.8, y + 1.73, block(width: 159.9pt, pad(left: 6pt, fit-value(value, 150.9, fonts.宋体))))
     }
   }
   field-row(461.9, ("学", "科", "专", "业"), "major", info.major)
@@ -166,6 +166,10 @@
 
   put(0, 725.69, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
 }
+
+
+
+
 
 
 

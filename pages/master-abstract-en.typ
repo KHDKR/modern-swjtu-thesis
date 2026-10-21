@@ -1,4 +1,4 @@
-#import "../utils/style.typ": 字号, 字体
+﻿#import "../utils/style.typ": 字号, 字体
 #import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
 // 硕士研究生英文摘要页（ABSTRACT）
@@ -51,7 +51,7 @@
     width: 100%,
     above: 0pt,
     below: 25.67pt,
-    align(center, text(font: fonts.黑体, size: 字号.小三, weight: "bold", title)),
+    align(center, text(font: fonts.黑体, size: 字号.小三, weight: "bold", stroke: 0.015em + 0.25pt, title)),
   )
 
   // 5.  摘要正文
@@ -73,5 +73,7 @@
     },
   )
 }
+
+
 
 

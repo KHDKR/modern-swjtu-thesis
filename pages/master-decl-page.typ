@@ -1,4 +1,4 @@
-#import "../utils/style.typ": 字号, 字体
+﻿#import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生声明页：学位论文独创性声明 + 学位论文使用授权
 // 逐项按 Word 原版 PDF 的墨迹坐标复刻（A4，页边距 3 cm）。
@@ -22,7 +22,7 @@
   let decl-title(ink-y, content) = place(
     center + top,
     dy: title-top(ink-y),
-    text(font: fonts.黑体, size: title-size, weight: "bold", content),
+    text(font: fonts.黑体, size: title-size, weight: "bold", stroke: 0.015em + 0.25pt, content),
   )
 
   let body-text(ink-y, content) = at(85.1, body-top(ink-y), {
@@ -49,7 +49,9 @@
 
   body-text(284.5)[本学位论文的主要创新点如下：]
 
-  place(top + left, dx: 240.1pt, dy: body-top(519.3), text(size: 12pt, [作者签名：#h(4em)]))
+  place(top + left, dx: 240.1pt, dy: body-top(519.3), text(size: 12pt, [作者签名：]))
+  // 签名下划线（与 Word 原版 385.2–481.2 pt 一致）
+  place(top + left, dx: 300.1pt, dy: 446pt, line(length: 96pt, stroke: 0.5pt))
   place(top + left, dx: 246.1pt, dy: body-top(560.6), text(size: 12pt, [日期：#h(3em)年#h(2em)月#h(1.5em)日]))
 
   // 2.  学位论文使用授权
@@ -67,12 +69,16 @@
   body-text(313.5)[2．不保密□，使用本授权书。]
   body-text(337.1)[（请在以上方框内打“√”）]
 
-  place(top + left, dx: 24.1pt, dy: body-top(378.5), text(size: 12pt, [作者签名：#h(2em)]))
-
-  place(top + left, dx: 233.9pt, dy: body-top(378.5), text(size: 12pt, [导师签名：#h(2em)]))
+  place(top + left, dx: 24.1pt, dy: body-top(378.5), text(size: 12pt, [作者签名：]))
+  place(top + left, dx: 233.9pt, dy: body-top(378.5), text(size: 12pt, [导师签名：]))
+  // 两处签名下划线（Word 原版：169.1–300.4、379.1–510.4 pt）
+  place(top + left, dx: 84pt, dy: 305.2pt, line(length: 131.3pt, stroke: 0.5pt))
+  place(top + left, dx: 294pt, dy: 305.2pt, line(length: 131.3pt, stroke: 0.5pt))
 
   place(top + left, dx: 239.2pt, dy: body-top(413.8), text(size: 12pt, [日期：#h(3em)年#h(2em)月#h(1.5em)日]))
 }
+
+
 
 
 

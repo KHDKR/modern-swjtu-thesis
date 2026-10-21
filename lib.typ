@@ -145,7 +145,7 @@
           heading-size: (字号.小三, 字号.四号, 字号.四号, 字号.小四),
           heading-above: (24pt, 23.3pt, 12pt, 12pt),
           heading-below: (18pt, 13.8pt, 6pt, 6pt),
-          heading-weight: ("regular", "regular", "regular", "regular"),
+          heading-weight: ("regular", "regular", "regular", "bold"),
           heading-top-space: 29pt,
           leading: 8pt,
           spacing: 0pt,
@@ -174,11 +174,15 @@
     appendix: (..args) => {
       let named = args.named()
       if doctype == "master" or doctype == "doctor" {
-        // 附录按「附录 A、附录 B……」编号，图表按「图 A-1、表 A-1」编号
+        // 附录按「附录 A、附录 B……」编号，图表按「图 A-1、表 A-1」编号，
+        // 公式按「（A-1）」编号
         let opts = (
           numbering: custom-numbering.with(first-level: "附录A", depth: 4, "1.1 "),
           reset-counter: true,
           show-figure: show-figure.with(numbering: "A-1"),
+          show-equation: show-equation.with(numbering: (..nums) => {
+            text(font: ("Times New Roman",))[（#numbering("A-1", ..nums)）]
+          }),
         ) + named
         appendix(..args.pos(), ..opts)
       } else {
@@ -449,6 +453,7 @@
     },
   )
 }
+
 
 
 

@@ -1,4 +1,4 @@
-#import "@preview/i-figured:0.2.4"
+﻿#import "@preview/i-figured:0.2.4"
 #import "../utils/style.typ": 字号, 字体
 #import "../utils/custom-numbering.typ": custom-numbering
 #import "../utils/custom-heading.typ": heading-display, active-heading, current-heading
@@ -136,10 +136,13 @@
   set heading(numbering: numbering)
   // 4.2 设置字体字号并加入假段落模拟首行缩进
   show heading: it => {
+    let weight = array-at(heading-weight, it.level)
     set text(
       font: array-at(heading-font, it.level),
       size: array-at(heading-size, it.level),
-      weight: array-at(heading-weight, it.level),
+      weight: weight,
+      // 中文字体没有真正的粗体字面，用描边模拟 Word 的合成加粗
+      stroke: if weight == "bold" { 0.015em + 0.25pt } else { none },
       ..unpairs(heading-text-args-lists
         .map((pair) => (pair.at(0), array-at(pair.at(1), it.level))))
     )
@@ -225,6 +228,7 @@
 
   it
 }
+
 
 
 
