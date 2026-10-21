@@ -1,4 +1,4 @@
-﻿#import "../utils/style.typ": 字号, 字体
+#import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生声明页：学位论文独创性声明 + 学位论文使用授权
 // 逐项按 Word 原版 PDF 的墨迹坐标复刻（A4，页边距 3 cm）。
@@ -12,6 +12,10 @@
 ) = {
   // 0.  默认参数
   fonts = 字体 + fonts
+
+  // 复选框：强制用中文字体渲染，避免拉丁字体（Times New Roman）里的窄方框
+  let cjk-font = if type(fonts.宋体) == array { fonts.宋体.slice(1) } else { (fonts.宋体,) }
+  let checkbox = text(font: cjk-font, "□")
 
   // 正文墨迹顶端到 block 顶端的补偿（12 pt 宋体实测 1.31 pt）
   let body-dy = 1.31pt
@@ -65,8 +69,9 @@
   ]
 
   body-text(267.2)[本学位论文属于]
-  body-text(290.1)[1．保密□，在 #h(3em) 年解密后适用本授权书；]
-  body-text(313.5)[2．不保密□，使用本授权书。]
+  // 「保密□，在 ___ 年解密」：Word 中这里只有 3 个半角空格（18 pt），没有下划线
+  body-text(290.1)[1．保密#checkbox，在#h(1.5em)年解密后适用本授权书；]
+  body-text(313.5)[2．不保密#checkbox，使用本授权书。]
   body-text(337.1)[（请在以上方框内打“√”）]
 
   place(top + left, dx: 24.1pt, dy: body-top(378.5), text(size: 12pt, [作者签名：]))
@@ -75,7 +80,8 @@
   place(top + left, dx: 84pt, dy: 305.2pt, line(length: 131.3pt, stroke: 0.5pt))
   place(top + left, dx: 294pt, dy: 305.2pt, line(length: 131.3pt, stroke: 0.5pt))
 
-  place(top + left, dx: 239.2pt, dy: body-top(413.8), text(size: 12pt, [日期：#h(3em)年#h(2em)月#h(1.5em)日]))
+  // 日期：Word 为「日期：」+ 5 个空格 + 年 + 3 个空格 + 月 + 3 个空格 + 日（无下划线）
+  place(top + left, dx: 239.2pt, dy: body-top(413.8), text(size: 12pt, [日期：#h(2.5em)年#h(1.5em)月#h(1.5em)日]))
 }
 
 
