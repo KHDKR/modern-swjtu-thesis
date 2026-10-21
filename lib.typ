@@ -1,4 +1,4 @@
-﻿// 南京大学学位论文模板 modern-nju-thesis
+// 南京大学学位论文模板 modern-nju-thesis
 // Author: https://github.com/OrangeX4
 // Repo: https://github.com/nju-lug/modern-nju-thesis
 // 在线模板可能不会更新得很及时，如果需要最新版本，请关注 Repo
@@ -174,10 +174,11 @@
     appendix: (..args) => {
       let named = args.named()
       if doctype == "master" or doctype == "doctor" {
-        // 附录按「附录 A、附录 B……」编号
+        // 附录按「附录 A、附录 B……」编号，图表按「图 A-1、表 A-1」编号
         let opts = (
           numbering: custom-numbering.with(first-level: "附录A", depth: 4, "1.1 "),
           reset-counter: true,
+          show-figure: show-figure.with(numbering: "A-1"),
         ) + named
         appendix(..args.pos(), ..opts)
       } else {
@@ -411,7 +412,7 @@
         show bibliography-element: set text(font: fonts.宋体, size: 字号.五号, top-edge: 0.75em, bottom-edge: -0.25em)
         show bibliography-element: set par(
           hanging-indent: 2.5em,
-          leading: 4.4pt,
+          leading: 9.5pt,
           spacing: 0pt,
           justify: true,
           first-line-indent: 0pt,
@@ -448,6 +449,8 @@
     },
   )
 }
+
+
 
 
 

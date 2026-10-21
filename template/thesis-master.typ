@@ -1,4 +1,4 @@
-﻿#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
+#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
 
 // ============================================================
 // 西南交通大学硕士学位论文模板（示例入口）
@@ -143,7 +143,9 @@
 
 本文的主要工作包括：分析学校硕士学位论文格式规范；实现封面、声明、摘要、目录等页面；验证模板的排版效果。已有研究表明，规范的排版有助于提升论文质量 @蒋有绪1998。
 
-// 表格示例：三线表，表题居中置于表上方
+// 表格示例：三线表，表题居中置于表上方。
+// 标签不要带类型前缀：写成 <compare>，引用时写 @tbl:compare；
+// 图片同理（标签 <logo>，引用 @fig:logo），公式同理（标签 <ratio>，引用 @eqt:ratio）。
 #figure(
   table(
     columns: (1fr, 1fr, 1fr),

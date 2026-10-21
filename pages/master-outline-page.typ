@@ -11,7 +11,7 @@
   twoside: false,
   fonts: (:),
   // 其他参数
-  depth: 4,
+  depth: 3,
   title: "目　录",
   header-title: "目 录",
   outlined: false,
@@ -89,6 +89,7 @@
   // 5.  渲染目录
   outline(title: none, depth: depth, indent: 0pt)
 }
+
 
 
 

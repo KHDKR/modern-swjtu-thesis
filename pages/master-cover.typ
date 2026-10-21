@@ -103,7 +103,7 @@
   ])))
 
   // 4.3 学位论文题目（18 pt 黑体加下划线，居中）
-  put(0, 361.47, block(width: 595.3pt, align(center, {
+  put(73.7, 361.47, block(width: 448pt, align(center, {
     set par(leading: 13pt)
     underline(stroke: underline-stroke, text(font: fonts.黑体, size: title-size, info.title.join("\n")))
   })))
@@ -166,6 +166,7 @@
 
   put(0, 725.69, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
 }
+
 
 
 

@@ -26,8 +26,11 @@
   )
 
   let body-text(ink-y, content) = at(85.1, body-top(ink-y), {
-    set par(first-line-indent: (amount: 2em, all: true))
-    block(width: 15cm, content)
+    block(width: 15cm, {
+      set par(first-line-indent: 0pt)
+      h(2em)
+      content
+    })
   })
 
   // 1.  学位论文独创性声明
@@ -35,7 +38,7 @@
   set page(margin: 3cm, header: none, footer: none, numbering: none)
   set text(font: fonts.宋体, size: body-size, top-edge: 0.75em, bottom-edge: -0.25em)
   // Word 原版声明页正文使用 1.5 倍行距（行距约 23.3 磅）
-  set par(leading: 11.3pt, spacing: 0pt, justify: true, first-line-indent: (amount: 2em, all: true))
+  set par(leading: 11.3pt, spacing: 0pt, justify: true, first-line-indent: 0pt)
 
   decl-title(87.5, "西南交通大学")
   decl-title(111.4, "学位论文独创性声明")
