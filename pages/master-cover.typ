@@ -1,4 +1,4 @@
-#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
+﻿#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
 #import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生封面（中文封面 + 英文扉页）
@@ -102,14 +102,23 @@
     硕#h(11pt)士#h(11pt)学#h(11pt)位#h(11pt)论#h(11pt)文
   ])))
 
-  // 4.3 学位论文题目（18 pt 黑体，居中；每行一条通栏下划线）
-  // 标题可能换行，逐行绘制贯穿整行（版心宽 448 pt）的下划线，而不是只描在文字下方。
+  // 4.3 学位论文题目（18 pt 黑体，居中；每行一条连续下划线）
+  // Typst 的 underline() 会在空格和字体切换处断开，形成逐字下划线；
+  // 这里按每行文字的实际宽度单独画一条连续的线。
   put(73.7, 361.47, block(width: 448pt, align(center, {
     set par(leading: 13pt)
     text(font: fonts.黑体, size: title-size, info.title.join("\n"))
   })))
-  for i in range(info.title.len()) {
-    hline(73.7, 377.4 + i * 31, 448, stroke: underline-stroke)
+  for (i, title-line) in info.title.enumerate() {
+    context {
+      let w = measure(text(font: fonts.黑体, size: title-size, title-line)).width
+      place(
+        top + left,
+        dx: (595.3pt - w) / 2,
+        dy: (377.4 + i * 31) * 1pt,
+        line(length: w, stroke: underline-stroke),
+      )
+    }
   }
 
   // 4.4 学科专业、学号、作者姓名、指导老师、学院
@@ -170,6 +179,7 @@
 
   put(0, 725.69, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
 }
+
 
 
 
