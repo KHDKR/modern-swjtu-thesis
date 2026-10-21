@@ -1,4 +1,4 @@
-﻿#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
+#import "../utils/datetime-display.typ": datetime-display, datetime-en-display
 #import "../utils/style.typ": 字号, 字体
 
 // 硕士研究生封面（中文封面 + 英文扉页）
@@ -102,11 +102,15 @@
     硕#h(11pt)士#h(11pt)学#h(11pt)位#h(11pt)论#h(11pt)文
   ])))
 
-  // 4.3 学位论文题目（18 pt 黑体加下划线，居中）
+  // 4.3 学位论文题目（18 pt 黑体，居中；每行一条通栏下划线）
+  // 标题可能换行，逐行绘制贯穿整行（版心宽 448 pt）的下划线，而不是只描在文字下方。
   put(73.7, 361.47, block(width: 448pt, align(center, {
     set par(leading: 13pt)
-    underline(stroke: underline-stroke, text(font: fonts.黑体, size: title-size, info.title.join("\n")))
+    text(font: fonts.黑体, size: title-size, info.title.join("\n"))
   })))
+  for i in range(info.title.len()) {
+    hline(73.7, 377.4 + i * 31, 448, stroke: underline-stroke)
+  }
 
   // 4.4 学科专业、学号、作者姓名、指导老师、学院
   // 值过长时等比缩小，但最小保留 11 pt，避免出现难以辨认的小字
