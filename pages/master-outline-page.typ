@@ -41,6 +41,8 @@
     footer: master-footer(numbering: "I", fonts: fonts),
   )
 
+  if outlined { invisible-heading(level: 1, title) }
+
   // 3.  目录标题（距页面顶端 24 磅，与 Word 原版对齐）
   v(28.94pt)
   block(
@@ -88,6 +90,7 @@
 
   // 5.  渲染目录
   outline(title: none, depth: depth, indent: 0pt)
+  metadata("swjtu-section-end")
 }
 
 

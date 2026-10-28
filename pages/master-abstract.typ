@@ -1,3 +1,4 @@
+#import "../utils/invisible-heading.typ": invisible-heading
 ﻿#import "../utils/style.typ": 字号, 字体
 #import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
@@ -43,9 +44,11 @@
     footer: master-footer(numbering: "I", fonts: fonts),
   )
 
+  if outlined { invisible-heading(level: 1, title) }
+
   // 3.  正文样式
   set text(font: fonts.宋体, size: 字号.小四, top-edge: 0.75em, bottom-edge: -0.25em)
-  set par(leading: 8pt, spacing: 0pt, justify: true, first-line-indent: (amount: 2em, all: true))
+  set par(leading: 8pt, spacing: 8pt, justify: true, first-line-indent: (amount: 2em, all: true))
 
   // 4.  标题（与 Word 原版墨迹位置对齐）
   v(28.94pt)
@@ -59,20 +62,16 @@
   // 5.  摘要正文
   body
 
-  // 6.  关键词（顶格，悬挂缩进与 Word 对齐）
-  v(keyword-gap)
-  block(
-    width: 100%,
-    above: 0pt,
-    below: 0pt,
-    {
-      set par(first-line-indent: 0pt, hanging-indent: 4.4em, leading: 8pt, spacing: 0pt, justify: true)
-      text(weight: "bold", stroke: 0.015em + 0.25pt, [关键词：])
-      if keywords.len() > 0 {
-        keywords.join("，")
-      }
-    },
-  )
+  // 标签列按实际字宽测量，续行与第一行关键词内容对齐。
+  if keywords.len() > 0 {
+    v(keyword-gap)
+    block(width: 100%, above: 0pt, below: 0pt, {
+      set par(first-line-indent: 0pt, leading: 8pt, spacing: 0pt, justify: true)
+      grid(columns: (auto, 1fr), column-gutter: 0pt,
+        text(weight: "bold", stroke: 0.015em + 0.25pt, [关键词：]), keywords.join("，"))
+    })
+  }
+  metadata("swjtu-section-end")
 }
 
 

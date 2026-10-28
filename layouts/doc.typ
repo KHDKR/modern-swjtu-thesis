@@ -11,6 +11,7 @@
   margin: auto,  // auto 时使用本科模板的页面边距，硕士模板由 documentclass 传入 3cm
   header-ascent: none,  // 页眉内容相对内容区上边界的上升距离
   footer-descent: none,  // 页脚内容相对内容区下边界的下降距离
+  math-font: none,
   it,
 ) = {
   // 0.  默认参数
@@ -54,5 +55,10 @@
     it
   }
 
-  it
+  if math-font == none {
+    it
+  } else {
+    show math.equation: set text(font: math-font)
+    it
+  }
 }

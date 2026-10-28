@@ -1,4 +1,5 @@
 #import "../utils/style.typ": 字号, 字体
+#import "../layouts/master-preface.typ": master-pagebreak
 
 // 硕士研究生声明页：学位论文独创性声明 + 学位论文使用授权
 // 逐项按 Word 原版 PDF 的墨迹坐标复刻（A4，页边距 3 cm）。
@@ -9,9 +10,23 @@
   // 其他参数
   title-size: 字号.三号,
   body-size: 字号.小四,
+  innovation-points: none,
+  // 正式电子版可传两张已签字扫描页（独创性声明、授权书），原样排为 A4。
+  scans: (),
 ) = {
   // 0.  默认参数
   fonts = 字体 + fonts
+  if scans.len() > 0 {
+    assert(scans.len() == 2, message: "scans 必须按独创性声明、使用授权顺序提供两张图片。")
+    for scan in scans {
+      master-pagebreak(twoside: twoside)
+      page(margin: 0pt, header: none, footer: none, numbering: none, {
+        set image(width: 100%, height: 100%, fit: "contain")
+        if type(scan) == content { scan } else { image(scan) }
+      })
+    }
+    return
+  }
 
   // 复选框：强制用中文字体渲染，避免拉丁字体（Times New Roman）里的窄方框
   let cjk-font = if type(fonts.宋体) == array { fonts.宋体.slice(1) } else { (fonts.宋体,) }
@@ -38,7 +53,7 @@
   })
 
   // 1.  学位论文独创性声明
-  pagebreak(weak: true)
+  master-pagebreak(twoside: twoside)
   set page(margin: 3cm, header: none, footer: none, numbering: none)
   set text(font: fonts.宋体, size: body-size, top-edge: 0.75em, bottom-edge: -0.25em)
   // Word 原版声明页正文使用 1.5 倍行距（行距约 23.3 磅）
@@ -52,6 +67,13 @@
   ]
 
   body-text(284.5)[本学位论文的主要创新点如下：]
+  if innovation-points != none {
+    at(85.1, body-top(308), context {
+      let content = block(width: 15cm, innovation-points)
+      assert(measure(content).height <= 180pt, message: "创新点内容超出声明页预留区域。")
+      content
+    })
+  }
 
   place(top + left, dx: 240.1pt, dy: body-top(519.3), text(size: 12pt, [作者签名：]))
   // 签名下划线（与 Word 原版 385.2–481.2 pt 一致）
@@ -59,7 +81,7 @@
   place(top + left, dx: 246.1pt, dy: body-top(560.6), text(size: 12pt, [日期：#h(3em)年#h(2em)月#h(1.5em)日]))
 
   // 2.  学位论文使用授权
-  pagebreak(weak: true)
+  master-pagebreak(twoside: twoside)
 
   decl-title(87.5, "西南交通大学")
   decl-title(111.4, "学位论文使用授权")

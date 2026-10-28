@@ -1,4 +1,4 @@
-﻿#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
+﻿#import (if sys.inputs.at("local", default: "false") == "true" { "../lib.typ" } else { "@preview/modern-swjtu-thesis:0.2.0" }): documentclass
 
 // ============================================================
 // 西南交通大学硕士学位论文模板（示例入口）
@@ -8,7 +8,7 @@
 //   1. 修改下方 info 中的个人信息；
 //   2. 按章节顺序填写正文；
 //   3. 在 VS Code 中安装 Tinymist 插件后点击预览，或执行
-//      typst compile thesis-master.typ
+//      typst compile --root . --input local=true template/thesis-master.typ（仓库根目录执行）
 //
 // 如需本科模板，请使用同目录下的 thesis.typ（doctype: "bachelor"）。
 // ============================================================
@@ -31,19 +31,13 @@
   // 文档类型：本科生为 "bachelor"，硕士研究生为 "master"，博士为 "doctor"
   doctype: "master",
   // 学位类型："academic"（学术型）或 "professional"（专业型）
-  degree: "academic",
+  degree: sys.inputs.at("degree", default: "academic"),
+  twoside: sys.inputs.at("twoside", default: "false") == "true",
   // 盲审模式：将个人信息替换为黑色方块
   // anonymous: true,
-  fonts: (
-    宋体: ("Times New Roman", "SimSun", "Songti SC", "Noto Serif CJK SC", "STSong"),
-    黑体: ("Arial", "SimHei", "Heiti SC", "Noto Sans CJK SC", "STHeiti"),
-    楷体: ("Times New Roman", "KaiTi", "Kaiti SC", "Noto Serif CJK SC", "STKaiti"),
-    仿宋: ("Times New Roman", "FangSong", "STFangsong"),
-    等宽: ("Courier New", "Menlo", "IBM Plex Mono"),
-  ),
   info: (
-    // 论文题目：可用数组表示多行，也可用 "\n" 分隔
-    title: ("基于 Typst 的", "西南交通大学", "硕士学位论文模板"),
+    // 论文题目：默认原生自动换行；仅确需指定断行时使用数组或 "\n"
+    title: "基于 Typst 的西南交通大学硕士学位论文模板",
     title-en: "A Typst Template for Master Thesis of Southwest Jiaotong University",
     student-id: "2023201234",
     author: "张三",
@@ -167,11 +161,16 @@
 如@tbl:tab1 所示，硕士模板在页边距等方面与本科模板存在差异。
 
 #figure(
-  image("images/fig-sample.png", width: 65%),
+  box(width: 80%, grid(columns: (1fr, auto, 1fr, auto, 1fr),
+    align: center + horizon, column-gutter: 6pt,
+    rect(width: 100%, height: 30pt)[源文件], [→],
+    rect(width: 100%, height: 30pt)[排版引擎], [→],
+    rect(width: 100%, height: 30pt)[PDF],
+  )),
   caption: [模板生成结果的示例图],
 ) <fig1>
 
-如图 @fig:fig1 所示，模板可以自动生成图表编号与目录条目。如 @eqt:eq1 所示：
+如 @fig:fig1 所示，模板可以自动生成图表编号与目录条目。如 @eqt:eq1 所示：
 
 $ phi.alt := (1 + sqrt(5)) / 2 $ <eq1>
 
@@ -182,7 +181,11 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <eq1>
 本节用于验证图目录、表目录的自动收集功能。模板会为每个图表分配「章号-序号」形式的编号，并把图题、表题和页码写入对应的目录中。
 
 #figure(
-  image("images/fig-sample.png", width: 55%),
+  box(width: 80%, grid(columns: (1fr, auto, 1fr),
+    align: center + horizon, column-gutter: 8pt,
+    rect(width: 100%, height: 30pt)[配置参数], [→],
+    rect(width: 100%, height: 30pt)[学位论文样式],
+  )),
   caption: [第二张示例图，用于验证图目录中的多条记录],
 ) <fig2>
 
@@ -206,7 +209,7 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <eq1>
 
 == 公式排版
 
-多行公式同样会按章编号，并与公式主体右对齐：
+多行公式同样会按章编号，公式主体居中、编号右对齐：
 
 $ a &= b + c + d \
   &= e + f + g $ <eq2>
@@ -219,7 +222,7 @@ $ a &= b + c + d \
 
 = 结论
 
-本文实现并验证了西南交通大学硕士学位论文模板，排版结果符合学校研究生学位论文撰写范式的主要要求。
+本文实现并验证了西南交通大学硕士学位论文模板，各项格式的核验结果见项目审查报告。
 
 // 致谢（按学校范式，致谢在参考文献之前）
 #acknowledgement[
@@ -255,9 +258,7 @@ $ x = y + z $ <eq-app>
 附录公式见 @eqt:eq-app。
 
 // 攻读学位期间取得的研究成果
-#achievements(
-  note: [包括攻读学位期间发表的论文、专著/译注、专利、作品；参与的科研项目及科研获奖等。内容采用 5 号宋体，行距 16 磅，段前后各为 0 磅，具体格式参见 2.10。],
-)[
+#achievements[
   一、攻读博士/硕士学位期间发表的论文及科研成果
 
   1\. 张三. 基于 Typst 的学位论文模板设计[J]. 某某学报, 2025.

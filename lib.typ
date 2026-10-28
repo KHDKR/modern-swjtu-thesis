@@ -7,11 +7,13 @@
 #import "layouts/preface.typ": preface
 #import "layouts/master-preface.typ": master-preface
 #import "layouts/mainmatter.typ": mainmatter
+#import "layouts/master-mainmatter.typ": master-mainmatter
 #import "layouts/appendix.typ": appendix
 #import "pages/fonts-display-page.typ": fonts-display-page
 #import "pages/bachelor-cover.typ": bachelor-cover
 #import "pages/bachelor-copyright.typ": bachelor-copyright
 #import "pages/master-cover.typ": master-cover
+#import "pages/master-course-cover.typ": master-course-cover
 #import "pages/bachelor-decl-page.typ": bachelor-decl-page
 #import "pages/master-decl-page.typ": master-decl-page
 #import "pages/bachelor-abstract.typ": bachelor-abstract
@@ -23,6 +25,9 @@
 #import "pages/bachelor-outline-page.typ": bachelor-outline-page
 #import "pages/master-outline-page.typ": master-outline-page
 #import "pages/master-notation.typ": master-notation
+#import "pages/master-float-list.typ": master-float-list
+#import "utils/master-table.typ": master-table
+#import "utils/master-bibliography.typ": master-bibliography
 #import "pages/list-of-figures.typ": list-of-figures
 #import "pages/list-of-tables.typ": list-of-tables
 #import "pages/notation.typ": notation
@@ -37,9 +42,6 @@
 
 #let indent = h(2em)
 
-// 原生 bibliography 元素函数（documentclass 内的 bibliography 参数会遮蔽同名函数）
-#let bibliography-element = bibliography
-
 // 使用函数闭包特性，通过 `documentclass` 函数类进行全局信息配置，然后暴露出拥有了全局配置的、具体的 `layouts` 和 `templates` 内部函数。
 #let documentclass(
   doctype: "bachelor",  // "bachelor" | "master" | "doctor" | "postdoc"，文档类型，默认为本科生 bachelor
@@ -51,13 +53,21 @@
   fonts: (:),  // 字体，应传入「宋体」、「黑体」、「楷体」、「仿宋」、「等宽」
   info: (:),
 ) = {
+  // 硕士、博士、课程作业共用同一套正文版式
+  let master-like = doctype in ("master", "doctor", "course")
+
   // 默认参数
-  fonts = 字体 + fonts
-  // 研究生模板目前不在 PDF 中插入空白背页（双面打印时的空白背页由打印环节自然产生），
-  // 以免修改页码计数器导致版面无法收敛。
-  if doctype == "master" or doctype == "doctor" {
-    twoside = false
+  if doctype == "master" {
+    assert(degree in ("academic", "professional"), message: "degree 必须为 academic 或 professional。")
   }
+  // 博士样式不在本轮范围内，保持原有模式；硕士不再强制关闭双面。
+  if doctype == "doctor" { twoside = false }
+  fonts = (if master-like {
+    (宋体: ((name: "Times New Roman", covers: "latin-in-cjk"), "SimSun"),
+     黑体: ((name: "Times New Roman", covers: "latin-in-cjk"), "SimHei"),
+     楷体: ("Times New Roman", "KaiTi"), 仿宋: ("Times New Roman", "FangSong"),
+     等宽: "Courier New", 数学: "Cambria Math")
+  } else { 字体 }) + fonts
   info = (
     title: ("基于 Typst 的", "西南交通大学学位论文"),
     title-en: "SWJTU Thesis Template for Typst",
@@ -106,13 +116,14 @@
       let named = args.named()
       let margin = named.at(
         "margin",
-        default: if doctype == "master" or doctype == "doctor" { 3cm } else { auto },
+        default: if master-like { 3cm } else { auto },
       )
       let opts = (
         margin: margin,
-        header-ascent: if doctype == "master" or doctype == "doctor" { 7.4pt } else { none },
-        footer-descent: if doctype == "master" or doctype == "doctor" { 0pt } else { none },
-        info: info + named.at("info", default: (:)),
+        header-ascent: if master-like { 7.4pt } else { none },
+        footer-descent: if master-like { 0pt } else { none },
+        math-font: if master-like { fonts.at("数学", default: "Cambria Math") } else { none },
+        info: info + named.at("info", default: (:)) + (if anonymous and master-like { (author: "") } else { (:) }),
         fonts: fonts + named.at("fonts", default: (:)),
       ) + named
       doc(..args.pos(), ..opts)
@@ -120,7 +131,7 @@
     preface: (..args) => {
       let named = args.named()
       let opts = (twoside: twoside, fonts: fonts + named.at("fonts", default: (:))) + named
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         master-preface(..args.pos(), ..opts)
       } else {
         preface(..args.pos(), ..opts)
@@ -128,41 +139,14 @@
     },
     mainmatter: (..args) => {
       let named = args.named()
-      if doctype == "master" or doctype == "doctor" {
-        let opts = (
-          twoside: twoside,
-          display-header: false,
-          header-text: if doctype == "doctor" { "西南交通大学博士学位论文" } else { "西南交通大学硕士学位论文" },
-          header-font: fonts.宋体,
-          header-size: 字号.小五,
-          header-stroke: 0.8pt,
-          footer-style: "plain",
-          blank-page-before: false,
-          page-header-ascent: 7.4pt,
-          page-footer-descent: 0pt,
-          footer-size: 字号.小五,
-          numbering: custom-numbering.with(first-level: "第1章 ", depth: 4, "1.1 "),
-          heading-size: (字号.小三, 字号.四号, 字号.四号, 字号.小四),
-          heading-above: (24pt, 23.3pt, 12pt, 12pt),
-          heading-below: (18pt, 13.8pt, 6pt, 6pt),
-          heading-weight: ("regular", "regular", "regular", "bold"),
-          heading-top-space: 29pt,
-          leading: 8pt,
-          spacing: 0pt,
-          caption-style: it => it,
-          figure-above: 12pt,
-          figure-below: 12pt,
-          figure-gap: 6pt,
-
-          text-args: (
-            font: fonts.宋体,
-            size: 字号.小四,
-            top-edge: 0.75em,
-            bottom-edge: -0.25em,
-            cjk-latin-spacing: none,
-          ),
+      if master-like {
+        let opts = (twoside: twoside, fonts: fonts,
+          math-font: fonts.at("数学", default: "Cambria Math"),
+          header-text: if doctype == "doctor" { "西南交通大学博士学位论文" } else if doctype == "course" { "西南交通大学课程作业" } else { "西南交通大学硕士学位论文" },
+          header-size: if doctype == "course" { 字号.小五 } else { 字号.五号 },
+          show-header: true,
         ) + named + (fonts: fonts + named.at("fonts", default: (:)))
-        mainmatter(..args.pos(), ..opts)
+        master-mainmatter(..args.pos(), ..opts)
       } else {
         mainmatter(
           twoside: twoside,
@@ -173,21 +157,30 @@
     },
     appendix: (..args) => {
       let named = args.named()
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         // 附录按「附录 A、附录 B……」编号，图表按「图 A-1、表 A-1」编号，
         // 公式按「（A-1）」编号
         let opts = (
-          numbering: custom-numbering.with(first-level: "附录A", depth: 4, "1.1 "),
+          numbering: custom-numbering.with(first-level: "附录 A", depth: 4, "1.1"),
           reset-counter: true,
           show-figure: show-figure.with(numbering: "A-1"),
           show-equation: show-equation.with(numbering: (..nums) => {
-            text(font: ("Times New Roman",))[（#numbering("A-1", ..nums)）]
+            text(font: "Times New Roman")[(#numbering("A-1", ..nums))]
           }),
         ) + named
+        set text(font: fonts.宋体, size: 字号.五号)
+        set par(leading: 0pt, spacing: 0pt)
         appendix(..args.pos(), ..opts)
       } else {
         appendix(..args)
       }
+    },
+
+    thesis-table: master-table.with(fonts: fonts),
+    // 文献作为句子成分时使用平排编号，保留原生引用链接与合并逻辑。
+    cite-inline: (..args) => {
+      show super: marker => marker.body
+      cite(..args)
     },
 
     // 字体展示页
@@ -201,7 +194,14 @@
 
     // 封面页，通过 type 分发到不同函数
     cover: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
+      if doctype == "course" {
+        master-course-cover(
+          twoside: twoside,
+          ..args,
+          fonts: fonts + args.named().at("fonts", default: (:)),
+          info: info + args.named().at("info", default: (:)),
+        )
+      } else if master-like {
         master-cover(
           doctype: doctype,
           degree: degree,
@@ -227,7 +227,7 @@
 
     // 声明页，通过 type 分发到不同函数
     decl-page: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         master-decl-page(
           anonymous: anonymous,
           twoside: twoside,
@@ -286,7 +286,7 @@
 
     // 中文摘要页，通过 type 分发到不同函数
     abstract: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         master-abstract(
           doctype: doctype,
           degree: degree,
@@ -311,7 +311,7 @@
 
     // 英文摘要页，通过 type 分发到不同函数
     abstract-en: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         master-abstract-en(
           doctype: doctype,
           degree: degree,
@@ -336,7 +336,7 @@
 
     // 目录页
     outline-page: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         master-outline-page(
           twoside: twoside,
           ..args,
@@ -354,15 +354,9 @@
     // 插图目录页
     list-of-figures: (..args) => {
       let named = args.named()
-      if doctype == "master" or doctype == "doctor" {
-        let opts = (
-          twoside: twoside,
-          title: "图目录",
-          header-title: "图目录",
-          title-vspace: 25.17pt,
-          title-text-args: (font: fonts.黑体, size: 字号.小三),
-        ) + named
-        list-of-figures(..args.pos(), ..opts, fonts: fonts + named.at("fonts", default: (:)))
+      if master-like {
+        let opts = (twoside: twoside, fonts: fonts, title: "图目录") + named
+        master-float-list(image, ..opts)
       } else {
         list-of-figures(
           twoside: twoside,
@@ -375,15 +369,9 @@
     // 表格目录页
     list-of-tables: (..args) => {
       let named = args.named()
-      if doctype == "master" or doctype == "doctor" {
-        let opts = (
-          twoside: twoside,
-          title: "表目录",
-          header-title: "表目录",
-          title-vspace: 25.17pt,
-          title-text-args: (font: fonts.黑体, size: 字号.小三),
-        ) + named
-        list-of-tables(..args.pos(), ..opts, fonts: fonts + named.at("fonts", default: (:)))
+      if master-like {
+        let opts = (twoside: twoside, fonts: fonts, title: "表目录") + named
+        master-float-list(table, ..opts)
       } else {
         list-of-tables(
           twoside: twoside,
@@ -395,7 +383,7 @@
 
     // 符号表页
     notation: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
+      if master-like {
         master-notation(
           twoside: twoside,
           ..args,
@@ -411,20 +399,8 @@
 
     // 参考文献页
     bilingual-bibliography: (..args) => {
-      if doctype == "master" or doctype == "doctor" {
-        // 参考文献：五号字，悬挂缩进，两端对齐，固定行距 20 磅
-        show bibliography-element: set text(font: fonts.宋体, size: 字号.五号, top-edge: 0.75em, bottom-edge: -0.25em)
-        show bibliography-element: set par(
-          hanging-indent: 2.5em,
-          leading: 9.5pt,
-          spacing: 0pt,
-          justify: true,
-          first-line-indent: 0pt,
-        )
-        bilingual-bibliography(
-          bibliography: bibliography,
-          ..args,
-        )
+      if master-like {
+        master-bibliography(bibliography: bibliography, fonts: fonts, ..args)
       } else {
         bilingual-bibliography(
           bibliography: bibliography,
@@ -435,21 +411,38 @@
 
     // 致谢页
     acknowledgement: (..args) => {
-      acknowledgement(
-        anonymous: anonymous,
-        twoside: twoside,
-        ..args,
-      )
+      if doctype == "master" {
+        if not anonymous {
+          heading(level: 1, numbering: none, outlined: args.named().at("outlined", default: true),
+            args.named().at("title", default: "致谢"))
+          args.pos().first()
+        }
+      } else {
+        acknowledgement(anonymous: anonymous, twoside: twoside, ..args)
+      }
     },
 
     // 攻读学位期间取得的研究成果页
     achievements: (..args) => {
       let named = args.named()
-      let opts = (
-        twoside: twoside,
-        body-size: if doctype == "master" or doctype == "doctor" { 字号.五号 } else { auto },
-      ) + named + (fonts: fonts + named.at("fonts", default: (:)))
-      achievements(..args.pos(), ..opts)
+      if doctype == "master" {
+        heading(level: 1, numbering: none,
+          named.at("title", default: "攻读硕士学位期间取得的研究成果"))
+        let body-fonts = fonts + named.at("fonts", default: (:))
+        let requested-size = named.at("body-size", default: 字号.五号)
+        let size = if requested-size == auto { 字号.五号 } else { requested-size }
+        let height = named.at("line-height", default: 16pt)
+        set text(font: body-fonts.宋体, size: size, top-edge: 0.75 * height, bottom-edge: -0.25 * height)
+        set par(leading: 0pt, spacing: 0pt, first-line-indent: (amount: 2em, all: true))
+        if named.at("note", default: none) != none { named.note; parbreak() }
+        args.pos().first()
+      } else {
+        let opts = (
+          twoside: twoside,
+          body-size: if doctype == "doctor" { 字号.五号 } else { auto },
+        ) + named + (fonts: fonts + named.at("fonts", default: (:)))
+        achievements(..args.pos(), ..opts)
+      }
     },
   )
 }

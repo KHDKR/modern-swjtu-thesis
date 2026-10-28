@@ -19,3 +19,7 @@ Thumbs.db
 # my thesis local
 thesis/
 .codex
+
+# Reproducible audit output (PDFs, page images, extracted OOXML)
+build/
+__pycache__/

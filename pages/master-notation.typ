@@ -1,3 +1,4 @@
+#import "../utils/invisible-heading.typ": invisible-heading
 ﻿#import "../utils/style.typ": 字号, 字体
 #import "../layouts/master-preface.typ": master-header, master-footer, master-pagebreak
 
@@ -32,6 +33,8 @@
     footer: master-footer(numbering: "I", fonts: fonts),
   )
 
+  if outlined { invisible-heading(level: 1, title) }
+
   // 3.  标题（距页面顶端 24 磅）
   v(28.94pt)
   block(
@@ -42,8 +45,9 @@
   )
 
   // 4.  内容（通常为三线表）
-  set text(font: fonts.宋体, size: 字号.小四)
+  set text(font: fonts.宋体, size: 字号.五号)
   body
+  metadata("swjtu-section-end")
 }
 
 

@@ -11,3 +11,7 @@
   )
   months.at(date.month() - 1) + " " + str(date.day()) + ", " + str(date.year())
 }
+// 显示中文日期（带日，例如「2025 年 6 月 1 日」），用于课程作业封面
+#let datetime-display-day(date) = {
+  str(date.year()) + " 年 " + str(date.month()) + " 月 " + str(date.day()) + " 日"
+}
