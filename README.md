@@ -71,33 +71,21 @@ Typst 是可用于出版的可编程标记语言，拥有变量、函数与包�
 
 ## 硕士学位论文模板
 
-依据工作区中的《扉页及范式—硕士0712.docx》实现。正文一级标题、页眉等说明文字与 Word 预置样式存在差异，按明确说明处理；前置标题没有单独字号说明的，采用 Word 的直接格式。具体依据、验证结果和限制见 [硕士审计报告](docs/master-thesis-audit.md)。硕士正文使用独立布局，不改变本科接口。
-
-仓库内预览必须显式使用本地源码，避免误用已发布包缓存：
+依据《西南交通大学研究生学位论文撰写范式》（2024-07）实现，正文使用独立布局，不改变本科接口；与 Word 的逐项对照、验证结果和已知限制见 [硕士审计报告](docs/master-thesis-audit.md)。
 
 ```powershell
 typst compile --root . --input local=true template/thesis-master.typ master.pdf
-typst compile --root . --input local=true --input twoside=true template/thesis-master.typ master-print.pdf
-typst compile --root . --input local=true --input degree=professional template/thesis-master.typ master-professional.pdf
+# 双面打印加 --input twoside=true；专业学位加 --input degree=professional
 ```
 
-以上命令在仓库根目录执行。示例默认电子版；也可在 `documentclass` 中直接设置 `twoside: true`。双面模式将封面及声明各页排在新纸正面，前置部分按部分补空白背页且不占罗马页码；正文空白页计入连续页序，但不显示页眉页脚，各章从奇数页开始。
+完整示例见 [thesis-master.typ](template/thesis-master.typ)。默认字体为宋体、黑体、Times New Roman 和 Cambria Math。
 
-完整示例见 [thesis-master.typ](template/thesis-master.typ)。默认字体为宋体、黑体、Times New Roman 和 Cambria Math，须安装对应字体。其他平台可通过 `fonts` 和 `mainmatter` 的 `math-font` 参数指定字体；替代字体的外观需重新核验。本轮验证环境为 Windows，Typst 0.15.1；另验证 0.13.0 的编译与主要格式。
+- 正文：A4、四边 3 cm、小四号、固定 20 pt 基线；章/节/条/款为 16/14/14/12 pt 黑体。
+- 前置：中英文封面、独创性声明与授权、中英文摘要、目录、图目录、表目录、符号表与缩略词表按需调用；声明页也可用 `decl-page(scans: (...))` 直接插入已签字扫描页。
+- 页眉「西南交通大学硕士学位论文」五号宋体，0.75 pt 横线；页脚 9 pt 页码。
+- 参考文献使用学校适配 CSL，详见 [文献数据说明](styles/README.md)；附录的图、表、公式按 A-1 重新编号。
 
-- 正文：A4，四边 3 cm，小四号，固定 20 pt 基线间距；章、节、条、款为 16/14/14/12 pt 黑体，编号和英文使用 Times New Roman Bold。
-- 前置标题：小三号；英文摘要标题使用真正的 Times New Roman Bold，中文封面及声明中明确加粗的中文使用描边合成加粗。
-- 页眉：五号宋体与 Times New Roman，0.75 pt 横线；页码：9 pt Times New Roman。
-- 封面：标签分散对齐；填写内容在每条下划线上居中，长字段保持字号并自动换行，续行分别居中；空栏保留线条，超出页面容量时明确报错。题目默认自动换行，可通过 `cover(major-label: ...)` 改字段名称。
-- 图、表目录：自动提取编号及页码。`list-of-figures(enabled: false)`、`list-of-tables(enabled: false)` 可关闭；无条目时默认不出页，`show-empty: true` 可显式显示空目录。符号及缩略词表按需调用 `notation`。
-- 参考文献：采用学校适配 CSL，保留原生引用及链接；五号字、20 pt 基线、2.5 字符悬挂缩进，单条文献不跨页。正式论文默认只列已引用文献。
-- 附录：五号字；附录字母及图、表、公式编号随附录重置。成果页为五号、16 pt 行距，示例不再印出填写说明。
-
-`degree: "professional"` 可以独立配置专业学位论文内容并使用上述排版功能。但现有 Word 只提供一套“学科专业”封面，没有独立专业学位封面，不能据此确认“专业学位类别（领域）”这一替代标签。默认保留有依据的标签；具体学位类别及领域由作者填写，独立封面格式仍需相应官方文件确认。
-
-### 跨页三线表
-
-从 `documentclass` 解构取得 `thesis-table`，传入唯一的无前缀标签。组件自动重复表头、在续页标“续表”、保持编号，并进入表目录。表格内容以逐单元格参数传入，列宽与原生 `table` 一致：
+跨页表格可用 `thesis-table`（自动重复表头、续页标「续表」、保持编号）：
 
 ```typst
 #thesis-table(
@@ -105,25 +93,9 @@ typst compile --root . --input local=true --input degree=professional template/t
   header: ([参数], [取值]), caption: [测试参数],
   [电压], [100 V], [电流], [10 A],
 )
-
-如 @tbl:parameters 所示。
 ```
 
-普通图片和单页表仍用 `figure`。沿用 i-figured 标签约定：元素标签写 `<name>`，引用写 `@fig:name`、`@tbl:name` 或 `@eqt:name`。长图、表题自动换行，并按规范左右缩进四字符。图片内部文字的字号和清晰度仍由作者保证；示例改用可随模板字体排版的原生矢量图。
-
-### 文献数据
-
-硕士使用 `styles/swjtu-numeric.csl`；来源与 CC BY-SA 3.0 许可见 [styles/README.md](styles/README.md)。英文文献填写 `langid = {english}`，专有名词用 `{DC}` 等保护大小写。责任者的中文“等”与西文“et al.”分别输出。作为句子成分的引用可从 `documentclass` 取得 `cite-inline`，使用 `#cite-inline(<文献键>)`；普通 `@文献键` 仍为上标。
-
-Typst 不把非标准的 BibLaTeX `@standard` 自动识别为标准文献。可使用 `@misc`，填写 `type = {S}`，并在 `title` 中写清标准名称及标准号；不要按题名猜测文献类型。可运行的中英文与标准示例见 `tests/reference-format.bib`。原本科共用的 `ref.bib` 包含占位数据，不能直接视为已校对的正式文献库。
-
-### 声明与验证
-
-声明原文保持不变。可用 `decl-page(innovation-points: [...])` 填写创新点；正式电子提交可用 `decl-page(scans: (image("独创性声明.png"), image("使用授权.png")))` 插入两张已签字扫描页。
-
-开发者执行 `python scripts/capture_baseline.py` 与 `python scripts/run_tests.py`，结果及逐页图像位于忽略目录 `build/audit/`。规范 XML 提取及 Word 导出命令见审计报告。自动断言通过不能代替页面视觉审查。
-
-博士、博士后、国家图书馆封面与单独书脊文件不在本轮已验证范围内。本科已有缺陷按既定范围保留，兼容性以两份本科基线的逐页像素比较为准。
+普通图表沿用 i-figured 约定：标签写 `<name>`，引用写 `@fig:name`、`@tbl:name`、`@eqt:name`。
 
 ## 课程作业模板
 
