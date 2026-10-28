@@ -1,5 +1,6 @@
 #import "../utils/datetime-display.typ": datetime-display-day
 #import "../utils/style.typ": 字体
+#import "../utils/fill-field.typ": fill-field
 
 // 课程作业封面（只有一页，无摘要/目录）
 // 版式依据学校课程作业封面（Word 导出）逐项量取：
@@ -40,7 +41,6 @@
   // 中文字形墨迹相对 block 顶端的偏移（与硕士封面同一套实测值）
   let cjk-dy(y, size) = y * 1pt + 0.109 * size
   let put(x, y, body) = place(top + left, dx: x * 1pt, dy: y, body)
-  let blanks(n) = range(n).map(_ => "　").join("")
 
   // 2.  封面
   pagebreak(weak: true)
@@ -60,32 +60,46 @@
     ])))
 
   // 2.3 课程名称 + 作业号（Word：y=312.7，18 pt SimHei，下划线 191.9–403.5）
-  for (i, title-line) in info.title.enumerate() {
-    put(0, cjk-dy(312.7 + i * 31, title-size), block(width: 595.3pt, align(center,
-      underline(evade: false, text(font: fonts.黑体, size: title-size, title-line)),
-    )))
-  }
+  put(73.7, cjk-dy(312.7, title-size), context {
+    let title = block(width: 448pt, {
+      set text(font: fonts.黑体, size: title-size)
+      set par(leading: 31pt - title-size, spacing: 0pt, first-line-indent: 0pt)
+      align(center, if info.title.join("").trim() == "" {
+        fill-field("", size: title-size, font: fonts.黑体)
+      } else {
+        underline(evade: false, offset: 2.64pt, stroke: 0.96pt, info.title.join("\n"))
+      })
+    })
+    assert(measure(title).height <= 90pt, message: "课程名称超过三行，不能覆盖填写栏。")
+    title
+  })
 
   // 2.4 五个栏目（Word：标签 x=175.7、值 x=319.6、下划线 271.8–431.7）
-  let label-slot(chars) = grid(
-    columns: (26.7pt, 26.5pt, 26.5pt, 26.0pt),
-    ..chars.map(c => if c == none { [] } else { text(size: body-size, c) }),
-  )
-  // 值前留 3 个全角空格，使下划线从 271.8 pt 开始、到 431.7 pt 结束
-  let field-line(value) = context {
-    let w = measure(text(size: body-size, value)).width
-    let n = calc.max(0, int(calc.round((159.9pt - 3 * body-size - w) / body-size)))
-    underline(evade: false, text(size: body-size, blanks(3) + value + blanks(n)))
+  let label-slot(label) = {
+    set align(left)
+    let chars = label.clusters()
+    grid(columns: range(chars.len() - 1).map(_ => 1fr) + (auto,), ..chars)
   }
-  let field-row(y, chars, value) = {
-    put(175.7, cjk-dy(y, body-size), label-slot(chars))
-    put(271.8, cjk-dy(y, body-size), field-line(value))
-  }
-  field-row(415.1, ("学", "科", "专", "业"), info.major)
-  field-row(446.3, ("学", none, none, "号"), info.student-id)
-  field-row(477.5, ("作", "者", "姓", "名"), info.author)
-  field-row(508.7, ("指", "导", "老", "师"), info.supervisor.join("、"))
-  field-row(539.9, ("学", none, none, "院"), info.department)
+  put(0, cjk-dy(415.1, body-size), context {
+    set text(size: body-size)
+    set par(first-line-indent: 0pt, leading: 31.2pt - body-size, spacing: 0pt)
+    let labels = ("学科专业", "学号", "作者姓名", "指导老师", "学院")
+    let values = (info.major, info.student-id, info.author, info.supervisor.join("、"), info.department)
+    let natural-width = calc.max(..values.map(v => measure(
+      box(text(font: fonts.宋体, size: body-size, v)), width: 10000pt,
+    ).width)) + 16pt
+    let width = calc.min(calc.max(natural-width, 159.98pt), 425.2pt - 96.02pt)
+    let cells = labels.zip(values).map(((label, value)) => (
+      label-slot(label), fill-field(value, size: body-size, font: fonts.宋体),
+    )).flatten()
+    let fields = block(width: 96.02pt + width, grid(
+      columns: (96.02pt, width), column-gutter: 0pt,
+      row-gutter: 31.2pt - body-size, ..cells,
+    ))
+    assert(measure(fields).height <= 180pt,
+      message: "课程封面填写栏总高度超过可用区域，请精简字段或使用规范简称。")
+    block(width: 595.3pt, align(center, fields))
+  })
 
   // 2.5 日期（Word：y=617.4，16 pt，居中，无下划线）
   put(0, cjk-dy(617.4, body-size), block(width: 595.3pt, align(center,
