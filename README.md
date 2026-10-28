@@ -49,10 +49,6 @@ Typst 是可用于出版的可编程标记语言，拥有变量、函数与包�
    - `Source Han Sans SC` (思源黑体)
 3. 用 VS Code 打开该文件夹。
 4. 打开 `template/thesis.typ`，安装好 Tinymist 插件后，点击右上角的预览按钮（或者快捷键）即可在侧边实时渲染。
-5. 或者在终端执行：
-   ```bash
-   typst compile template/thesis.typ
-   ```
 
 ### 目录结构简析
 
@@ -71,43 +67,11 @@ Typst 是可用于出版的可编程标记语言，拥有变量、函数与包�
 
 ## 硕士学位论文模板
 
-依据《西南交通大学研究生学位论文撰写范式》（2024-07）实现，正文使用独立布局，不改变本科接口；与 Word 的逐项对照、验证结果和已知限制见 [硕士审计报告](docs/master-thesis-audit.md)。
-
-```powershell
-typst compile --root . --input local=true template/thesis-master.typ master.pdf
-# 双面打印加 --input twoside=true；专业学位加 --input degree=professional
-```
-
-完整示例见 [thesis-master.typ](template/thesis-master.typ)。默认字体为宋体、黑体、Times New Roman 和 Cambria Math。
-
-- 正文：A4、四边 3 cm、小四号、固定 20 pt 基线；章/节/条/款为 16/14/14/12 pt 黑体。
-- 前置：中英文封面、独创性声明与授权、中英文摘要、目录、图目录、表目录、符号表与缩略词表按需调用；声明页也可用 `decl-page(scans: (...))` 直接插入已签字扫描页。
-- 页眉「西南交通大学硕士学位论文」五号宋体，0.75 pt 横线；页脚 9 pt 页码。
-- 参考文献使用学校适配 CSL，详见 [文献数据说明](styles/README.md)；附录的图、表、公式按 A-1 重新编号。
-
-跨页表格可用 `thesis-table`（自动重复表头、续页标「续表」、保持编号）：
-
-```typst
-#thesis-table(
-  key: <parameters>, columns: (1fr, 2fr),
-  header: ([参数], [取值]), caption: [测试参数],
-  [电压], [100 V], [电流], [10 A],
-)
-```
-
-普通图表沿用 i-figured 约定：标签写 `<name>`，引用写 `@fig:name`、`@tbl:name`、`@eqt:name`。
+依据《西南交通大学研究生学位论文撰写范式》（2024-07）实现，覆盖中英文封面、独创性声明与授权、中英文摘要、目录、图目录、表目录、符号表与缩略词表、正文、参考文献、致谢、附录和成果页；正文使用独立布局，不改变本科接口。格式依据与已知限制见 [硕士审计报告](docs/master-thesis-audit.md)，使用方式见 [thesis-master.typ](template/thesis-master.typ)。
 
 ## 课程作业模板
 
-在硕士论文模板的基础上提供 `doctype: "course"`，只有一页课程作业封面，没有摘要、目录、图目录、附录和成果页；正文沿用硕士论文的版式（A4、四边 3 cm、小四宋体、20 pt 行距、章-节-条标题、图表与公式编号、参考文献），页眉为「西南交通大学课程作业」（小五号宋体），页脚保留页码并从 1 开始。
-
-```powershell
-typst compile --root . --input local=true template/thesis-course.typ course.pdf
-```
-
-封面字段复用论文模板的 `info`：`title` 填「课程名称 + 作业号」，`major`、`student-id`、`author`、`supervisor`、`department`、`submit-date` 与论文一致。校名与「课程作业」不加下划线，课程名称使用 `underline(evade: false)` 画一条连续线；栏目只给填写内容加线（标签不加线），日期不加线并整行居中；作者签名在右下角、其后留白。封面坐标按学校课程作业封面（Word 导出）逐项量取。
-
-完整示例见 [thesis-course.typ](template/thesis-course.typ)。
+在硕士模板基础上提供 `doctype: "course"`：只有一页课程作业封面，没有摘要、目录、图表目录、附录和成果页；正文沿用硕士版式，页眉为「西南交通大学课程作业」。字段与用法见 [thesis-course.typ](template/thesis-course.typ)。
 
 ## 参与贡献
 
