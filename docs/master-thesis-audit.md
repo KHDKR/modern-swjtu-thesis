@@ -208,3 +208,7 @@ typst compile --root . --input local=true --input twoside=true template/thesis-m
 **可提交为“修复已核验硕士排版并补齐双面/长表/文献支持”的PR供上游审查；不能以“全部学术型/专业型格式已经无条件符合学校最终提交要求”为PR结论。** 若上游要求本次同时交付独立专业学位封面，§6第1项仍是阻碍完整合并范围的依据缺口。其他人工确认项应与PR说明一同披露。本轮未自行创建PR。
 
 技术实现参考：Typst官方 [figure分页](https://typst.app/docs/reference/model/figure/#figure-behaviour)、[奇偶分页](https://typst.app/docs/reference/layout/pagebreak/)、[文字字体与覆盖范围](https://typst.app/docs/reference/text/text/)，以及固定版本的 [0.15.1文献布局源码](https://github.com/typst/typst/blob/v0.15.1/crates/typst-layout/src/rules.rs)。学校格式判断仍以本轮锁定Word文件为依据。
+
+## 2026-10-28 填写栏自适应调整
+
+按用户要求，中英文封面均默认根据实际16pt字体测量最长内容，统一扩宽填写线并整体水平居中；达到3cm页边距后再换行。`auto-field-width: false`保留官方空白范式的固定位置，用于原版坐标对照。新增整体居中与页边界断言；正式示例、空栏和长字段已重新编译并检查。本次验证为封面专项，不沿用历史全套测试通过结论。历史逐字绝对坐标数据只适用于固定模式。

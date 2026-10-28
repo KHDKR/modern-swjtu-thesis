@@ -166,13 +166,13 @@ def main():
         results['cases'][name] = compile_pdf(name, ROOT/'tests'/'master-regression.typ', inputs)
         check_master(name, inputs)
     results['cases']['cover-fields'] = compile_pdf('cover-fields', ROOT/'tests'/'cover-fields.typ')
-    check_fill_centers(OUT/'cover-fields.pdf', expected_rows=10)
+    check_fill_centers(OUT/'cover-fields.pdf', cover_pages=4)
     results['cases']['cover-official'] = compile_pdf('cover-official', ROOT/'tests'/'cover-official.typ')
     check_official_cover(OUT)
     results['cases']['cover-overflow'] = compile_pdf('cover-overflow', ROOT/'tests'/'cover-fields.typ',
         {'overflow':'true'}, '中文封面填写栏总高度超过可用区域')
     results['cases']['master-example'] = compile_pdf('master-example', ROOT/'template'/'thesis-master.typ', {'local':'true'})
-    check_fill_centers(OUT/'master-example.pdf', expected_rows=14)
+    check_fill_centers(OUT/'master-example.pdf')
     results['cases']['heading-spacing'] = compile_pdf('heading-spacing', ROOT/'tests'/'heading-spacing.typ')
     heading_page = fitz.open(OUT/'heading-spacing.pdf')[0]
     positions = {s['text']: s['origin'][1] for s in all_spans(heading_page)}

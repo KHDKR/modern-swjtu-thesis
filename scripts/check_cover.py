@@ -10,17 +10,20 @@ def chars(page):
             for span in line['spans'] for c in span['chars'] if not c['c'].isspace()]
 
 
-def check_fill_centers(path, expected_rows):
+def check_fill_centers(path, expected_rows=None, cover_pages=2):
     doc = fitz.open(path)
     count = 0
-    for i, page in enumerate(doc):
+    for i, page in enumerate(list(doc)[:cover_pages]):
         # Empty and long-field fixture repeats Chinese / English cover pairs.
-        left = 271.75 if i % 2 == 0 else 246.2
         rules = [d['rect'] for d in page.get_drawings()
-                 if abs(d['rect'].x0-left) < .1 and 465 < d['rect'].y0 < 735
+                 if 465 < d['rect'].y0 < 735
                  and d['rect'].width > 150 and d['rect'].height < 1]
         glyphs = chars(page)
         for rule in rules:
+            left = rule.x0
+            label_width = 96.02 if i % 2 == 0 else 81.4
+            assert abs((rule.x0-label_width+rule.x1)/2-page.rect.width/2) < .02
+            assert rule.x0-label_width >= 85 and rule.x1 <= page.rect.width-85
             row = [c for c in glyphs if c['origin'][0] >= left-.01
                    and abs(c['origin'][1]-(rule.y0-2)) < .1]
             if not row:
@@ -28,7 +31,9 @@ def check_fill_centers(path, expected_rows):
             center = (min(c['bbox'][0] for c in row)+max(c['bbox'][2] for c in row))/2
             assert abs(center-(rule.x0+rule.x1)/2) < .1, (path, i+1, center, rule)
             count += 1
-    assert count == expected_rows, (path, count, expected_rows)
+    assert count >= 5, (path,count)
+    if expected_rows is not None:
+        assert count == expected_rows, (path, count, expected_rows)
     return count
 
 

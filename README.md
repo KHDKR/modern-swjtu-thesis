@@ -326,3 +326,5 @@ PS：2025 年 2 月进行了 Typst 0.13 的迁移更新。
 This project is licensed under the MIT License.
 
 
+
+中英文封面填写栏默认按最长内容自动扩宽，并将标签与填写栏整体水平居中；达到3cm页边距后再换行。各行内容仍在下划线上居中。需要恢复官方空白栏的固定宽度与横向位置时，使用 `cover(auto-field-width: false)`。

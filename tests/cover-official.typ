@@ -8,4 +8,4 @@
   submit-date: datetime(year: 2024, month: 1, day: 8),
 ))
 #show: cls.doc
-#(cls.cover)()
+#(cls.cover)(auto-field-width: false)

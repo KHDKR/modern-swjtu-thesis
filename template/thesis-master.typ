@@ -1,4 +1,5 @@
-﻿#import (if sys.inputs.at("local", default: "false") == "true" { "../lib.typ" } else { "@preview/modern-swjtu-thesis:0.2.0" }): documentclass
+﻿// #import (if sys.inputs.at("local", default: "false") == "true" { "../lib.typ" } else { "@preview/modern-swjtu-thesis:0.2.0" }): documentclass
+#import "../lib.typ": documentclass
 
 // ============================================================
 // 西南交通大学硕士学位论文模板（示例入口）
@@ -22,11 +23,24 @@
 
 #let (
   // 布局函数
-  twoside, doc, preface, mainmatter, appendix,
+  twoside,
+  doc,
+  preface,
+  mainmatter,
+  appendix,
   // 页面函数
-  fonts-display-page, cover, decl-page, abstract, abstract-en,
-  outline-page, list-of-figures, list-of-tables, notation,
-  acknowledgement, achievements, bilingual-bibliography,
+  fonts-display-page,
+  cover,
+  decl-page,
+  abstract,
+  abstract-en,
+  outline-page,
+  list-of-figures,
+  list-of-tables,
+  notation,
+  acknowledgement,
+  achievements,
+  bilingual-bibliography,
 ) = documentclass(
   // 文档类型：本科生为 "bachelor"，硕士研究生为 "master"，博士为 "doctor"
   doctype: "master",
@@ -42,10 +56,10 @@
     student-id: "2023201234",
     author: "张三",
     author-en: "Zhang San",
-    department: "计算机与人工智能学院",
-    department-en: "School of Computing and Artificial Intelligence",
-    major: "计算机科学与技术",
-    major-en: "Computer Science and Technology",
+    department: "电气工程学院",
+    department-en: "School of Electrical Engineering",
+    major: "电气工程",
+    major-en: "Electrical Engineering",
     supervisor: ("李四", "教授"),
     supervisor-en: "Professor Li Si",
     // 联合指导导师（可选）
@@ -161,10 +175,14 @@
 如@tbl:tab1 所示，硕士模板在页边距等方面与本科模板存在差异。
 
 #figure(
-  box(width: 80%, grid(columns: (1fr, auto, 1fr, auto, 1fr),
-    align: center + horizon, column-gutter: 6pt,
-    rect(width: 100%, height: 30pt)[源文件], [→],
-    rect(width: 100%, height: 30pt)[排版引擎], [→],
+  box(width: 80%, grid(
+    columns: (1fr, auto, 1fr, auto, 1fr),
+    align: center + horizon,
+    column-gutter: 6pt,
+    rect(width: 100%, height: 30pt)[源文件],
+    [→],
+    rect(width: 100%, height: 30pt)[排版引擎],
+    [→],
     rect(width: 100%, height: 30pt)[PDF],
   )),
   caption: [模板生成结果的示例图],
@@ -181,10 +199,11 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <eq1>
 本节用于验证图目录、表目录的自动收集功能。模板会为每个图表分配「章号-序号」形式的编号，并把图题、表题和页码写入对应的目录中。
 
 #figure(
-  box(width: 80%, grid(columns: (1fr, auto, 1fr),
-    align: center + horizon, column-gutter: 8pt,
-    rect(width: 100%, height: 30pt)[配置参数], [→],
-    rect(width: 100%, height: 30pt)[学位论文样式],
+  box(width: 80%, grid(
+    columns: (1fr, auto, 1fr),
+    align: center + horizon,
+    column-gutter: 8pt,
+    rect(width: 100%, height: 30pt)[配置参数], [→], rect(width: 100%, height: 30pt)[学位论文样式],
   )),
   caption: [第二张示例图，用于验证图目录中的多条记录],
 ) <fig2>
@@ -211,8 +230,10 @@ $ phi.alt := (1 + sqrt(5)) / 2 $ <eq1>
 
 多行公式同样会按章编号，公式主体居中、编号右对齐：
 
-$ a &= b + c + d \
-  &= e + f + g $ <eq2>
+$
+  a & = b + c + d \
+    & = e + f + g
+$ <eq2>
 
 @eqt:eq2 展示了多行对齐的写法。
 

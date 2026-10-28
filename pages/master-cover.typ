@@ -20,6 +20,7 @@
   // 其他参数
   underline-stroke: 0.6pt,
   title-size: 18pt,
+  auto-field-width: true,
   major-label: "学科专业",
   anonymous-info-keys: ("student-id", "author", "supervisor", "supervisor-ii", "author-en", "supervisor-en"),
   datetime-display: date => str(date.year()) + " 年 " + str(date.month()) + " 月 " + str(date.day()) + " 日",
@@ -121,6 +122,7 @@
   // 4.4 固定标签栏、原生可换行内容栏。所有行（包括空栏）均保留填写线。
   let value(key, body) = if hide(key) { "" } else { body }
   let label-slot(label) = {
+    set align(left)
     let chars = label.clusters()
     if chars.len() in (2, 4) {
       // 行内 box 中的 fr 空白没有拉开字距。使用原生 grid 的等分列，
@@ -128,20 +130,30 @@
       grid(columns: range(chars.len() - 1).map(_ => 1fr) + (auto,), ..chars)
     } else { label }
   }
-  put(175.73, 463.63, context {
+  put(0, 463.63, context {
     set text(size: 16pt)
     set par(first-line-indent: 0pt, leading: 15.2pt, spacing: 0pt)
-    let fields = grid(
-      columns: (96.02pt, 159.98pt), column-gutter: 0pt, row-gutter: 15.2pt,
+    let values = (value("major", info.major), value("student-id", info.student-id),
+      value("author", info.author), value("supervisor", info.supervisor.join(" ")),
+      value("department", info.department))
+    let natural-width = calc.max(..values.map(v => measure(
+      box(text(font: fonts.宋体, size: 16pt, v)), width: 10000pt,
+    ).width)) + 16pt
+    let width = if auto-field-width {
+      calc.min(calc.max(natural-width, 159.98pt), 425.2pt - 96.02pt)
+    } else { 159.98pt }
+    let fields = block(width: 96.02pt + width, grid(
+      columns: (96.02pt, width), column-gutter: 0pt, row-gutter: 15.2pt,
       label-slot(major-label), fill-field(value("major", info.major), font: fonts.宋体),
       label-slot("学号"), fill-field(value("student-id", info.student-id), font: fonts.宋体),
       label-slot("作者姓名"), fill-field(value("author", info.author), font: fonts.宋体),
       label-slot("指导老师"), fill-field(value("supervisor", info.supervisor.join(" ")), font: fonts.宋体),
       label-slot("学院"), fill-field(value("department", info.department), font: fonts.宋体),
-    )
+    ))
     assert(measure(fields).height <= 220pt,
       message: "中文封面填写栏总高度超过可用区域，请精简字段或使用规范简称。")
-    fields
+    if auto-field-width { block(width: 595.3pt, align(center, fields)) }
+    else { block(width: 595.3pt, pad(left: 175.73pt, fields)) }
   })
 
   // 4.5 日期
@@ -163,7 +175,7 @@
   })
 
   // 英文扉页按 Word 批注要求：放不下时加行，显示每行下框线。
-  put(164.8, 455.83, context {
+  put(0, 455.83, context {
     set text(font: "Times New Roman", size: 16pt)
     set par(first-line-indent: 0pt, leading: 15.2pt, spacing: 0pt)
     let make-fields(width) = grid(
@@ -174,13 +186,25 @@
       align(right, [Supervisor]), fill-field(value("supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }), font: "Times New Roman"),
       align(right, [School]), fill-field(value("department-en", info.department-en), font: "Times New Roman"),
     )
-    // 空栏/常规内容采用 Word 原版的 160pt 填写线。多项长内容放不下时，
-    // 可用宽度扩展至右页边距；仍保留字号和每行填写线。
-    let fields = make-fields(160pt)
-    if measure(fields).height > 235pt { fields = make-fields(263.8pt) }
+    // 由实际填写内容测量统一栏宽。最少160pt，最长内容两侧各留8pt；
+    // 整个标签/内容组合在页面居中，达到3cm页边距后才原生换行。
+    let values = (
+      value("major-en", info.major-en), value("student-id", info.student-id),
+      value("author-en", info.author-en),
+      value("supervisor-en", info.supervisor-en + if info.supervisor-ii-en != "" { ", " + info.supervisor-ii-en } else { "" }),
+      value("department-en", info.department-en),
+    )
+    let natural-width = calc.max(..values.map(v => measure(
+      box(text(font: "Times New Roman", size: 16pt, v)), width: 10000pt,
+    ).width)) + 16pt
+    let width = if auto-field-width {
+      calc.min(calc.max(natural-width, 160pt), 425.2pt - 81.4pt)
+    } else { 160pt }
+    let fields = block(width: 81.4pt + width, make-fields(width))
     assert(measure(fields).height <= 235pt,
       message: "英文扉页填写栏总高度超过可用区域，请精简字段或使用规范简称。")
-    fields
+    if auto-field-width { block(width: 595.3pt, align(center, fields)) }
+    else { block(width: 595.3pt, pad(left: 164.8pt, fields)) }
   })
 
   put(0, 728.86, block(width: 595.3pt, align(center, text(font: "Times New Roman", size: 16pt, datetime-en-display(info.submit-date)))))
