@@ -1,11 +1,7 @@
-// 这一行在「本地源码」和「已发布包」之间二选一：
-//   - 仓库内开发：typst compile --input local=true …… 时用 ../lib.typ；
-//   - 普通使用：从 @preview/modern-swjtu-thesis 加载已发布版本。
-// 编辑器里这段 import 的红色波浪线是 Tinymist 对条件导入的静态检查误报，不影响编译。
-// 只使用已发布包时，也可以把这一行换成：#import "@preview/modern-swjtu-thesis:0.2.0": documentclass
-// #import (if sys.inputs.at("local", default: "false") == "true" { "../lib.typ" } else { "@preview/modern-swjtu-thesis:0.2.0" }): documentclass
-
-#import "../lib.typ": documentclass
+// 仓库内开发：typst compile --input local=true …… 时用本地源码 ../lib.typ；
+// 普通使用（含 typst init 生成的项目）：从已发布包 @preview/modern-swjtu-thesis 加载。
+// 编辑器对条件导入的红色波浪线是 Tinymist 的静态检查误报，不影响编译。
+#import (if sys.inputs.at("local", default: "false") == "true" { "../lib.typ" } else { "@preview/modern-swjtu-thesis:0.2.0" }): documentclass
 
 // ============================================================
 // 西南交通大学课程作业模板（示例入口）
